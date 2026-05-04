@@ -7,6 +7,7 @@ dist
 *.log
 .vercel
 .cache
+.netlify
 
 # Source materials (kept locally, not in repo)
 teaser_full_*.pptx
