@@ -1,0 +1,71 @@
+---
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import { getDict, type Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = getDict(locale).video;
+---
+
+<section id="video" class="bg-bg-dark text-ink-white section-pad">
+  <div class="container-content">
+    <div class="reveal max-w-3xl">
+      <Eyebrow text={t.eyebrow} variant="dark" />
+      <h2 class="h1-section text-ink-white mt-4">{t.title}</h2>
+      <p class="text-base md:text-lg text-ink-mutedDk mt-4">{t.subtitle}</p>
+    </div>
+
+    <div class="reveal mt-10 md:mt-14 relative aspect-video bg-card-dark border border-line-dark/40 overflow-hidden group" data-video-wrap>
+      <!-- Poster -->
+      <button
+        type="button"
+        data-video-play
+        class="absolute inset-0 w-full h-full"
+        aria-label={t.play}
+      >
+        <img
+          src="/images/video-poster.jpg"
+          alt=""
+          loading="lazy"
+          class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+        />
+        <span class="absolute inset-0 bg-bg-dark/30 group-hover:bg-bg-dark/15 transition-colors"></span>
+        <span class="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <span class="flex items-center justify-center w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-gold bg-bg-dark/40 backdrop-blur-sm transition-transform group-hover:scale-110">
+            <span class="serif text-3xl md:text-4xl text-gold ml-1.5">▶</span>
+          </span>
+        </span>
+        <span class="absolute bottom-4 right-4 text-xs tracking-[0.2em] uppercase text-ink-white/85 bg-bg-dark/60 px-3 py-1.5 tabular">
+          {t.duration}
+        </span>
+      </button>
+
+      <!-- Video element (hidden until play) -->
+      <video
+        data-video-el
+        class="absolute inset-0 w-full h-full object-cover hidden"
+        controls
+        playsinline
+        preload="none"
+        poster="/images/video-poster.jpg"
+      >
+        <source src="/video/hotel-tour.mp4" type="video/mp4" media="(min-width: 768px)" />
+        <source src="/video/hotel-tour-720.mp4" type="video/mp4" />
+      </video>
+    </div>
+  </div>
+</section>
+
+<script>
+  const wrap = document.querySelector<HTMLElement>('[data-video-wrap]');
+  if (wrap) {
+    const playBtn = wrap.querySelector<HTMLButtonElement>('[data-video-play]');
+    const video = wrap.querySelector<HTMLVideoElement>('[data-video-el]');
+    playBtn?.addEventListener('click', () => {
+      if (!video || !playBtn) return;
+      playBtn.classList.add('hidden');
+      video.classList.remove('hidden');
+      video.play().catch(() => {});
+    });
+  }
+</script>

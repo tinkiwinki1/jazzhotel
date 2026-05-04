@@ -1,0 +1,21 @@
+---
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import Section from '@/components/ui/Section.astro';
+import HighlightsShowcase from '@/components/sections/HighlightsShowcase';
+import { getDict, type Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = getDict(locale).highlights;
+---
+
+<Section id="highlights" variant="dark">
+  <div class="reveal">
+    <Eyebrow text={t.eyebrow} variant="dark" />
+    <h2 class="h1-section text-ink-white mt-4 max-w-3xl">{t.title}</h2>
+  </div>
+
+  <div class="mt-10 md:mt-14 reveal">
+    <HighlightsShowcase client:visible items={t.items} />
+  </div>
+</Section>

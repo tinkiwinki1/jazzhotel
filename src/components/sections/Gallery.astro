@@ -1,0 +1,151 @@
+---
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import Section from '@/components/ui/Section.astro';
+import { getDict, type Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = getDict(locale).gallery;
+
+type Cat = 'exterior' | 'lobby' | 'rooms' | 'wellness' | 'fnb';
+type Photo = { src: string; alt: string; cat: Cat };
+
+const aRu = locale === 'ru';
+const photos: Photo[] = [
+  { src: '/images/gallery/exterior-01.jpg', alt: aRu ? 'Внешний вид · фасад' : 'Exterior · facade', cat: 'exterior' },
+  { src: '/images/gallery/exterior-02.jpg', alt: aRu ? 'Внешний вид · вход' : 'Exterior · entrance', cat: 'exterior' },
+
+  { src: '/images/gallery/lobby-01.jpg',  alt: aRu ? 'Лобби' : 'Lobby',           cat: 'lobby' },
+  { src: '/images/gallery/lobby-02.jpg',  alt: aRu ? 'Лобби · стойка' : 'Lobby · reception', cat: 'lobby' },
+  { src: '/images/gallery/lounge-01.jpg', alt: aRu ? 'Зона отдыха' : 'Lounge',    cat: 'lobby' },
+  { src: '/images/gallery/corridor-01.jpg', alt: aRu ? 'Коридор' : 'Corridor',    cat: 'lobby' },
+  { src: '/images/gallery/corridor-02.jpg', alt: aRu ? 'Коридор' : 'Corridor',    cat: 'lobby' },
+  { src: '/images/gallery/corridor-03.jpg', alt: aRu ? 'Коридор' : 'Corridor',    cat: 'lobby' },
+
+  { src: '/images/gallery/room-01.jpg', alt: aRu ? 'Номер deluxe' : 'Deluxe room', cat: 'rooms' },
+  { src: '/images/gallery/room-02.jpg', alt: aRu ? 'Номер' : 'Guest room',         cat: 'rooms' },
+  { src: '/images/gallery/room-03.jpg', alt: aRu ? 'Номер' : 'Guest room',         cat: 'rooms' },
+  { src: '/images/gallery/room-04.jpg', alt: aRu ? 'Номер' : 'Guest room',         cat: 'rooms' },
+  { src: '/images/gallery/room-05.jpg', alt: aRu ? 'Номер' : 'Guest room',         cat: 'rooms' },
+  { src: '/images/gallery/room-06.jpg', alt: aRu ? 'Номер' : 'Guest room',         cat: 'rooms' },
+  { src: '/images/gallery/balcony-01.jpg', alt: aRu ? 'Балкон номера' : 'Room balcony', cat: 'rooms' },
+  { src: '/images/gallery/bath-01.jpg', alt: aRu ? 'Ванная комната' : 'Bathroom', cat: 'rooms' },
+  { src: '/images/gallery/bath-02.jpg', alt: aRu ? 'Ванная комната' : 'Bathroom', cat: 'rooms' },
+  { src: '/images/gallery/bath-03.jpg', alt: aRu ? 'Ванная комната' : 'Bathroom', cat: 'rooms' },
+
+  { src: '/images/gallery/pool-01.jpg', alt: aRu ? 'Бассейн' : 'Pool', cat: 'wellness' },
+  { src: '/images/gallery/pool-02.jpg', alt: aRu ? 'Бассейн' : 'Pool', cat: 'wellness' },
+  { src: '/images/gallery/pool-03.jpg', alt: aRu ? 'Бассейн' : 'Pool', cat: 'wellness' },
+  { src: '/images/gallery/pool-04.jpg', alt: aRu ? 'Бассейн' : 'Pool', cat: 'wellness' },
+  { src: '/images/gallery/pool-05.jpg', alt: aRu ? 'Бассейн' : 'Pool', cat: 'wellness' },
+  { src: '/images/gallery/sauna-01.jpg', alt: aRu ? 'Сауна' : 'Sauna', cat: 'wellness' },
+  { src: '/images/gallery/locker-01.jpg', alt: aRu ? 'Раздевалка' : 'Changing room', cat: 'wellness' },
+
+  { src: '/images/gallery/restaurant-01.jpg', alt: aRu ? 'Ресторан' : 'Restaurant', cat: 'fnb' },
+  { src: '/images/gallery/restaurant-02.jpg', alt: aRu ? 'Ресторан' : 'Restaurant', cat: 'fnb' },
+  { src: '/images/gallery/restaurant-03.jpg', alt: aRu ? 'Ресторан' : 'Restaurant', cat: 'fnb' },
+];
+
+const cats: Array<{ key: 'all' | Cat; label: string; count: number }> = [
+  { key: 'all',      label: t.categories.all,      count: photos.length },
+  { key: 'exterior', label: t.categories.exterior, count: photos.filter(p => p.cat === 'exterior').length },
+  { key: 'lobby',    label: t.categories.lobby,    count: photos.filter(p => p.cat === 'lobby').length },
+  { key: 'rooms',    label: t.categories.rooms,    count: photos.filter(p => p.cat === 'rooms').length },
+  { key: 'wellness', label: t.categories.wellness, count: photos.filter(p => p.cat === 'wellness').length },
+  { key: 'fnb',      label: t.categories.fnb,      count: photos.filter(p => p.cat === 'fnb').length },
+];
+---
+
+<Section id="gallery" variant="light">
+  <div class="reveal">
+    <Eyebrow text={t.eyebrow} />
+    <h2 class="h1-section mt-4 max-w-2xl">{t.title}</h2>
+    <p class="text-base md:text-lg text-ink-mutedLt mt-4 max-w-2xl">{t.subtitle}</p>
+  </div>
+
+  <!-- Filter tabs -->
+  <div class="reveal mt-10 md:mt-14 flex flex-wrap gap-2 md:gap-3 border-b border-line-dim/60 pb-1" data-gallery-tabs>
+    {cats.map((c, i) => (
+      <button
+        type="button"
+        data-cat={c.key}
+        class={`relative px-4 md:px-5 py-2.5 text-xs md:text-sm tracking-[0.1em] uppercase transition-colors ${
+          i === 0 ? 'text-ink' : 'text-ink-mutedLt hover:text-ink'
+        }`}
+      >
+        <span class="relative z-10">{c.label}</span>
+        <span class="ml-1.5 text-[10px] tabular text-ink-mutedLt/70">({c.count})</span>
+        <span
+          class={`absolute bottom-[-5px] left-0 right-0 h-[2px] bg-gold transition-transform origin-left ${
+            i === 0 ? 'scale-x-100' : 'scale-x-0'
+          }`}
+          data-tab-underline
+        ></span>
+      </button>
+    ))}
+  </div>
+
+  <!-- Masonry-ish grid -->
+  <div
+    id="gallery-grid"
+    class="reveal mt-8 md:mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 auto-rows-[180px] md:auto-rows-[220px]"
+  >
+    {photos.map((p, idx) => {
+      // Vary size to break the grid rhythm
+      const big = (idx + 1) % 5 === 0;
+      const tall = idx % 7 === 3;
+      return (
+        <button
+          type="button"
+          data-gallery-photo
+          data-cat={p.cat}
+          data-index={idx}
+          class={`group relative overflow-hidden bg-card-dark ${big ? 'md:col-span-2 md:row-span-2' : ''} ${tall && !big ? 'row-span-2' : ''}`}
+          aria-label={p.alt}
+        >
+          <img
+            src={p.src}
+            alt={p.alt}
+            loading="lazy"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <span class="absolute inset-0 bg-bg-dark/0 group-hover:bg-bg-dark/15 transition-colors"></span>
+        </button>
+      );
+    })}
+  </div>
+</Section>
+
+<script type="application/json" id="gallery-data" set:html={JSON.stringify(photos)} is:inline />
+
+<script>
+  // Tab filtering
+  const tabs = document.querySelectorAll<HTMLButtonElement>('[data-gallery-tabs] button');
+  const photos = document.querySelectorAll<HTMLElement>('[data-gallery-photo]');
+
+  tabs.forEach((tab) =>
+    tab.addEventListener('click', () => {
+      const cat = tab.dataset.cat;
+      tabs.forEach((t) => {
+        const isActive = t === tab;
+        t.classList.toggle('text-ink', isActive);
+        t.classList.toggle('text-ink-mutedLt', !isActive);
+        const u = t.querySelector<HTMLElement>('[data-tab-underline]');
+        if (u) {
+          u.classList.toggle('scale-x-100', isActive);
+          u.classList.toggle('scale-x-0', !isActive);
+        }
+      });
+      photos.forEach((p) => {
+        const visible = cat === 'all' || p.dataset.cat === cat;
+        if (visible) {
+          p.classList.remove('hidden');
+          p.classList.add('animate-fade-in-up');
+        } else {
+          p.classList.add('hidden');
+          p.classList.remove('animate-fade-in-up');
+        }
+      });
+    }),
+  );
+</script>

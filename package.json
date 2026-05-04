@@ -1,0 +1,32 @@
+{
+  "name": "northern-tbilisi-hotel",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/node": "^9.0.0",
+    "@astrojs/react": "^4.1.2",
+    "@astrojs/tailwind": "^5.1.4",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "astro": "^5.0.0",
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.2",
+    "recharts": "^2.13.3",
+    "tailwindcss": "^3.4.16",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.7.2",
+    "zod": "^3.23.8"
+  }
+}

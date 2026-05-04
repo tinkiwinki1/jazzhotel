@@ -1,0 +1,17 @@
+---
+interface Props {
+  locale: 'ru' | 'en';
+  altHref: string;
+}
+const { locale, altHref } = Astro.props;
+---
+
+<div class="flex items-center text-xs tracking-[0.15em] uppercase text-ink-mutedDk">
+  <span class={`px-1 ${locale === 'ru' ? 'text-gold' : 'opacity-60'}`}>
+    {locale === 'ru' ? 'RU' : <a href="/" class="hover:text-gold">RU</a>}
+  </span>
+  <span class="opacity-40">/</span>
+  <span class={`px-1 ${locale === 'en' ? 'text-gold' : 'opacity-60'}`}>
+    {locale === 'en' ? 'EN' : <a href={altHref} class="hover:text-gold">EN</a>}
+  </span>
+</div>

@@ -1,0 +1,54 @@
+---
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import Section from '@/components/ui/Section.astro';
+import RoadmapShowcase from '@/components/sections/RoadmapShowcase';
+import { getDict, type Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = getDict(locale).roadmap;
+---
+
+<Section id="roadmap" variant="dark">
+  <div class="reveal">
+    <Eyebrow text={t.eyebrow} variant="dark" />
+    <h2 class="h1-section text-ink-white mt-4 max-w-4xl">{t.title}</h2>
+  </div>
+
+  <div class="mt-10 md:mt-14 reveal">
+    <RoadmapShowcase client:visible items={t.cards} />
+  </div>
+
+  <!-- Growth bar -->
+  <div class="mt-12 md:mt-16 reveal">
+    <div class="eyebrow text-gold-soft mb-5">{t.growthBar.label}</div>
+
+    <div class="grid grid-cols-[auto_1fr_auto] items-center gap-4 md:gap-8">
+      <div class="text-right">
+        <div class="serif text-2xl md:text-4xl text-ink-white tabular leading-none" data-count-up>{t.growthBar.from}</div>
+        <div class="eyebrow text-ink-mutedDk mt-2 hidden md:block">{t.growthBar.fromLabel}</div>
+      </div>
+
+      <div class="relative h-12 md:h-16 bg-card-dark border border-line-dark/60 overflow-hidden">
+        <div
+          class="absolute left-0 top-0 bottom-0 bg-gold growth-bar-fill"
+          style="--bar-pct: 63.4%"
+        ></div>
+        <div
+          class="absolute right-0 top-0 bottom-0 left-[63.4%] border-l border-dashed border-gold/60 flex items-center justify-center"
+        >
+          <span class="eyebrow text-gold-soft px-3">{t.growthBar.upsideLabel}</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="serif text-2xl md:text-4xl text-gold tabular leading-none" data-count-up>{t.growthBar.to}</div>
+        <div class="eyebrow text-ink-mutedDk mt-2 hidden md:block text-right">EBITDA</div>
+      </div>
+    </div>
+
+    <p class="text-sm md:text-[15px] text-ink-mutedDk text-center mt-6 max-w-3xl mx-auto leading-relaxed">
+      {t.growthBar.caption}
+    </p>
+  </div>
+</Section>

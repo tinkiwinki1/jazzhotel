@@ -1,0 +1,328 @@
+---
+import '@/styles/global.css';
+import Nav from '@/components/Nav.astro';
+import Footer from '@/components/Footer.astro';
+import StickyMobileCTA from '@/components/ui/StickyMobileCTA.astro';
+import type { Locale } from '@/i18n';
+import { getDict } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDict(locale);
+const altHref = locale === 'ru' ? '/en/' : '/';
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>{t.meta.title}</title>
+    <meta name="description" content={t.meta.description} />
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="alternate" hreflang="ru" href="/" />
+    <link rel="alternate" hreflang="en" href="/en/" />
+    <link rel="alternate" hreflang="x-default" href="/" />
+
+    <meta property="og:title" content={t.meta.title} />
+    <meta property="og:description" content={t.meta.description} />
+    <meta property="og:image" content={t.meta.ogImage} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={t.meta.title} />
+    <meta name="twitter:description" content={t.meta.description} />
+    <meta name="twitter:image" content={t.meta.ogImage} />
+
+    <link rel="preload" as="image" href="/images/hero.jpg" fetchpriority="high" />
+  </head>
+  <body class="bg-bg-light text-ink">
+    <Nav locale={locale} altHref={altHref} />
+    <main id="top">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+    <StickyMobileCTA locale={locale} />
+
+    <!-- Universal lightbox -->
+    <div
+      id="lightbox"
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-bg-dark/95 backdrop-blur-sm p-4 md:p-8"
+      role="dialog"
+      aria-modal="true"
+    >
+      <button
+        id="lightbox-close"
+        type="button"
+        class="absolute top-4 right-4 md:top-6 md:right-6 text-ink-white text-2xl w-10 h-10 flex items-center justify-center hover:text-gold transition-colors z-10"
+        aria-label="Close"
+      >✕</button>
+      <button
+        id="lightbox-prev"
+        type="button"
+        class="absolute left-3 md:left-8 top-1/2 -translate-y-1/2 text-ink-white text-3xl w-12 h-12 flex items-center justify-center hover:text-gold transition-colors z-10"
+        aria-label="Previous"
+      >‹</button>
+      <button
+        id="lightbox-next"
+        type="button"
+        class="absolute right-3 md:right-8 top-1/2 -translate-y-1/2 text-ink-white text-3xl w-12 h-12 flex items-center justify-center hover:text-gold transition-colors z-10"
+        aria-label="Next"
+      >›</button>
+      <figure class="flex flex-col items-center max-w-[95vw] max-h-[90vh]">
+        <img id="lightbox-img" src="" alt="" class="max-w-[95vw] max-h-[80vh] object-contain" />
+        <figcaption id="lightbox-caption" class="mt-4 text-xs tracking-[0.15em] uppercase text-ink-mutedDk text-center"></figcaption>
+      </figure>
+    </div>
+
+    <script>
+      // ===== Vanilla count-up =====
+      // Animates any element with [data-count-up] attribute when it enters the viewport.
+      // The element's text is its target value; we replace it with the animated number.
+      // Re-uses parseMetric/formatMetric in spirit but inlined here to keep zero deps.
+      (function () {
+        const els = document.querySelectorAll<HTMLElement>('[data-count-up]');
+        if (!els.length) return;
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        type Parsed = {
+          prefix: string;
+          num: number;
+          suffix: string;
+          decimals: number;
+          sep: '.' | ',';
+          thousands: string;
+        };
+
+        function parse(raw: string): Parsed | null {
+          const m = raw.match(/^(\D*?)(-?[\d.,     ]+)([\s\S]*)$/);
+          if (!m) return null;
+          const prefix = m[1];
+          const body = m[2];
+          const suffix = m[3];
+          const sep: '.' | ',' = body.includes(',') ? ',' : '.';
+          const cleaned = body.replace(/[\s  ]/g, '');
+          const normalized = cleaned.replace(',', '.');
+          const num = parseFloat(normalized);
+          if (Number.isNaN(num)) return null;
+          const dec = normalized.split('.')[1];
+          const thousandsMatch = body.match(/\d([\s  ])\d{3}/);
+          return {
+            prefix,
+            num,
+            suffix,
+            decimals: dec ? dec.length : 0,
+            sep,
+            thousands: thousandsMatch ? thousandsMatch[1] : '',
+          };
+        }
+
+        function format(n: number, p: Parsed): string {
+          const fixed = Math.abs(n) >= 1000 && p.decimals === 0
+            ? Math.round(n).toString()
+            : n.toFixed(p.decimals);
+          let [intPart, decPart] = fixed.split('.');
+          if (p.thousands && intPart.length > 3) {
+            intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, p.thousands);
+          }
+          const numStr = decPart ? `${intPart}${p.sep}${decPart}` : intPart;
+          return `${p.prefix}${numStr}${p.suffix}`;
+        }
+
+        const animate = (el: HTMLElement) => {
+          const target = (el.dataset.countUp || el.textContent || '').trim();
+          const p = parse(target);
+          if (!p) {
+            el.textContent = target;
+            return;
+          }
+          if (reduce) {
+            el.textContent = format(p.num, p);
+            return;
+          }
+          const duration = parseInt(el.dataset.countUpDuration || '1100', 10);
+          const delay = parseInt(el.dataset.countUpDelay || '0', 10);
+          const start = performance.now() + delay;
+          const tick = (now: number) => {
+            if (now < start) {
+              requestAnimationFrame(tick);
+              return;
+            }
+            const t = Math.min(1, (now - start) / duration);
+            const eased = 1 - Math.pow(1 - t, 3);
+            el.textContent = format(p.num * eased, p);
+            if (t < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        };
+
+        // Pre-fill with zero so animation starts visually clean
+        els.forEach((el) => {
+          if (!el.dataset.countUp) el.dataset.countUp = (el.textContent || '').trim();
+          const p = parse(el.dataset.countUp);
+          if (p) el.textContent = format(0, p);
+        });
+
+        if (!('IntersectionObserver' in window)) {
+          els.forEach(animate);
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                animate(e.target as HTMLElement);
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { threshold: 0.4 },
+        );
+        els.forEach((el) => io.observe(el));
+      })();
+
+      // Reveal-on-scroll observer
+      const reveals = document.querySelectorAll('.reveal');
+      if (reveals.length && 'IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.15 },
+        );
+        reveals.forEach((el) => io.observe(el));
+      } else {
+        reveals.forEach((el) => el.classList.add('in-view'));
+      }
+
+      // Growth bar
+      const bars = document.querySelectorAll('.growth-bar-fill');
+      if (bars.length && 'IntersectionObserver' in window) {
+        const bo = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                bo.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.4 },
+        );
+        bars.forEach((el) => bo.observe(el));
+      }
+
+      // Hero parallax (subtle)
+      const heroImg = document.querySelector<HTMLElement>('[data-hero-bg]');
+      if (heroImg && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        let raf = 0;
+        const onScroll = () => {
+          if (raf) return;
+          raf = requestAnimationFrame(() => {
+            const y = Math.min(window.scrollY * 0.18, 80);
+            heroImg.style.transform = `translate3d(0, ${y}px, 0) scale(1.05)`;
+            raf = 0;
+          });
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+      }
+
+      // ===== Universal lightbox =====
+      type GP = { src: string; alt: string };
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lightbox-img') as HTMLImageElement | null;
+      const lbCap = document.getElementById('lightbox-caption');
+      const lbPrev = document.getElementById('lightbox-prev');
+      const lbNext = document.getElementById('lightbox-next');
+      const lbClose = document.getElementById('lightbox-close');
+
+      let lbList: GP[] = [];
+      let lbIdx = 0;
+
+      function lbShow(i: number) {
+        if (!lbImg || !lbList.length) return;
+        lbIdx = (i + lbList.length) % lbList.length;
+        const p = lbList[lbIdx];
+        lbImg.src = p.src;
+        lbImg.alt = p.alt;
+        if (lbCap) lbCap.textContent = `${p.alt}  ·  ${lbIdx + 1} / ${lbList.length}`;
+      }
+      function lbOpen(list: GP[], i: number) {
+        if (!lb) return;
+        lbList = list;
+        lb.classList.remove('hidden');
+        lb.classList.add('!flex');
+        document.body.style.overflow = 'hidden';
+        lbShow(i);
+      }
+      function lbCloseFn() {
+        if (!lb) return;
+        lb.classList.add('hidden');
+        lb.classList.remove('!flex');
+        document.body.style.overflow = '';
+      }
+
+      lbClose?.addEventListener('click', lbCloseFn);
+      lb?.addEventListener('click', (e) => { if (e.target === lb) lbCloseFn(); });
+      lbPrev?.addEventListener('click', () => lbShow(lbIdx - 1));
+      lbNext?.addEventListener('click', () => lbShow(lbIdx + 1));
+      document.addEventListener('keydown', (e) => {
+        if (lb?.classList.contains('hidden')) return;
+        if (e.key === 'Escape') lbCloseFn();
+        if (e.key === 'ArrowLeft') lbShow(lbIdx - 1);
+        if (e.key === 'ArrowRight') lbShow(lbIdx + 1);
+      });
+
+      // Asset section gallery
+      const assetData = document.getElementById('asset-gallery-data');
+      if (assetData) {
+        const photos: GP[] = JSON.parse(assetData.textContent || '[]');
+        document.querySelectorAll<HTMLButtonElement>('[data-gallery-trigger]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const i = parseInt(btn.dataset.galleryIndex || '0', 10);
+            lbOpen(photos, i);
+          });
+        });
+      }
+
+      // Main gallery section
+      const galleryData = document.getElementById('gallery-data');
+      if (galleryData) {
+        const photos: GP[] = JSON.parse(galleryData.textContent || '[]');
+        document.querySelectorAll<HTMLButtonElement>('[data-gallery-photo]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const i = parseInt(btn.dataset.index || '0', 10);
+            lbOpen(photos, i);
+          });
+        });
+      }
+
+      // Mobile menu toggle
+      const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+      const mobileMenu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+      if (burger && mobileMenu) {
+        burger.addEventListener('click', () => {
+          const open = mobileMenu.classList.toggle('!flex');
+          burger.setAttribute('aria-expanded', String(open));
+          document.body.style.overflow = open ? 'hidden' : '';
+        });
+        mobileMenu.querySelectorAll('a').forEach((a) =>
+          a.addEventListener('click', () => {
+            mobileMenu.classList.remove('!flex');
+            burger.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+          }),
+        );
+      }
+    </script>
+  </body>
+</html>

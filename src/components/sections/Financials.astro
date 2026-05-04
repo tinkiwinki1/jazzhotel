@@ -1,0 +1,89 @@
+---
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import Section from '@/components/ui/Section.astro';
+import FinancialChart from '@/components/charts/FinancialChart';
+import FinancialsHero from '@/components/sections/FinancialsHero';
+import { getDict, type Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = getDict(locale).financials;
+---
+
+<Section id="financials" variant="light">
+  <div class="reveal">
+    <Eyebrow text={t.eyebrow} />
+    <h2 class="h1-section mt-4 max-w-3xl">{t.title}</h2>
+  </div>
+
+  <!-- Hero year-switcher with 3 cards -->
+  <div class="mt-10 md:mt-14 reveal">
+    <FinancialsHero client:visible labels={t.hero} locale={locale} />
+  </div>
+
+  <!-- P&L table + chart -->
+  <div class="grid lg:grid-cols-[1fr_1fr] gap-10 lg:gap-14 mt-12 md:mt-16 items-start">
+    <div class="reveal">
+      <div class="eyebrow text-gold-deep mb-5">{t.tableLabel}</div>
+      <div class="overflow-x-auto">
+        <table class="w-full border-t border-line-dim/60 text-sm md:text-[15px]">
+          <thead>
+            <tr class="border-b border-line-dim/60">
+              {t.table.headers.map((h, i) => (
+                <th
+                  class={`py-3 text-[11px] tracking-[0.15em] uppercase text-ink-mutedLt font-medium ${
+                    i === 0 ? 'text-left' : 'text-right'
+                  }`}
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {t.table.rows.map((row) => (
+              <tr class="border-b border-line-dim/40">
+                <td class={`py-3 ${row.bold ? 'font-semibold' : ''} ${row.italic ? 'italic text-ink-mutedLt' : ''}`}>
+                  {row.name}
+                </td>
+                {row.values.map((v, i) => (
+                  <td
+                    class={`py-3 text-right tabular ${row.bold ? 'font-semibold text-gold-deep' : ''} ${row.italic ? 'italic text-ink-mutedLt' : ''} ${
+                      i === row.values.length - 1 && !row.italic ? 'text-gold-deep' : ''
+                    }`}
+                  >
+                    {v}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-[11px] text-ink-mutedLt italic mt-4 leading-relaxed">{t.disclaimer}</p>
+    </div>
+
+    <div class="reveal bg-white/40 border border-line-dim p-6 md:p-7">
+      <div class="eyebrow text-gold-deep mb-4">{t.chart.unit}</div>
+      <FinancialChart client:visible labels={t.chart} />
+    </div>
+  </div>
+
+  <!-- Punchline bar -->
+  <div class="mt-12 md:mt-16 reveal bg-bg-dark text-ink-white">
+    <div class="grid md:grid-cols-[1fr_auto_1fr] items-center">
+      <div class="p-6 md:p-9 text-sm md:text-base text-ink-mutedDk leading-relaxed text-right md:pr-12">
+        {t.punchline.lead}
+      </div>
+      <div class="p-6 md:p-10 border-y md:border-y-0 md:border-x border-line-dark/40 bg-card-dark text-center">
+        <div class="serif text-4xl md:text-6xl text-gold tabular leading-none" data-count-up>
+          {t.punchline.cap}
+        </div>
+        <div class="eyebrow text-gold-soft mt-3">{t.punchline.headline}</div>
+      </div>
+      <div class="p-6 md:p-9 text-sm md:text-base text-ink-mutedDk leading-relaxed md:pl-12">
+        {t.punchline.tail}
+      </div>
+    </div>
+  </div>
+</Section>

@@ -1,0 +1,27 @@
+---
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import Section from '@/components/ui/Section.astro';
+import ProcessTimeline from '@/components/sections/ProcessTimeline';
+import { getDict, type Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = getDict(locale).process;
+---
+
+<Section id="process" variant="light">
+  <div class="reveal">
+    <Eyebrow text={t.eyebrow} />
+    <h2 class="h1-section mt-4 max-w-3xl">{t.title}</h2>
+  </div>
+
+  <div class="mt-12 md:mt-16 reveal">
+    <ProcessTimeline client:visible steps={t.steps} />
+  </div>
+
+  <!-- Bottom box -->
+  <div class="mt-12 md:mt-16 reveal bg-tan-card/60 border border-line-dim p-6 md:p-9">
+    <div class="eyebrow text-gold-deep mb-4">{t.bottomLabel}</div>
+    <p class="text-sm md:text-base text-ink leading-relaxed">{t.bottomBody}</p>
+  </div>
+</Section>

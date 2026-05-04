@@ -1,0 +1,81 @@
+---
+import { getDict, type Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = getDict(locale).hero;
+---
+
+<section
+  id="top"
+  class="relative min-h-screen overflow-hidden bg-bg-dark text-ink-white flex items-start"
+>
+  <!-- Background image -->
+  <div class="absolute inset-0 z-0">
+    <div
+      data-hero-bg
+      class="absolute inset-0 will-change-transform"
+      style="background-image: url('/images/hero.jpg'); background-size: cover; background-position: center;"
+    ></div>
+    <div class="absolute inset-0 bg-bg-dark/55"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-bg-dark/40 via-transparent to-bg-dark/70"></div>
+  </div>
+
+  <div class="relative z-10 container-content w-full pt-36 pb-16 md:pt-44">
+    <div class="flex items-start justify-between gap-6 mb-12 md:mb-20">
+      <div class="eyebrow text-gold max-w-[60%]">{t.eyebrow}</div>
+      <div class="border border-gold/60 p-4 md:p-5 bg-bg-dark/40 backdrop-blur-sm transition-transform duration-300 hover:-translate-y-2">
+        <div class="serif text-3xl md:text-5xl text-gold leading-none tabular" data-count-up>{t.capRate}</div>
+        <div class="eyebrow text-ink-mutedDk mt-2">{t.capRateLabel}</div>
+        <div class="text-[11px] text-ink-mutedDk mt-1">{t.capRateNote}</div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <p class="serif italic text-xl md:text-3xl text-ink-mutedDk mb-3 md:mb-5">
+        {t.titleSmall}
+      </p>
+      <h1 class="display-hero text-ink-white">
+        {t.titleLarge}
+      </h1>
+      <div class="h-[1px] w-24 md:w-40 bg-gold mt-6 md:mt-8 mb-8 md:mb-10"></div>
+      <p class="text-base md:text-lg max-w-2xl text-ink-mutedDk leading-relaxed">
+        {t.subtitle}
+      </p>
+
+      <!-- Booking.com guest rating badge -->
+      <div class="mt-8 md:mt-10 inline-flex items-stretch border border-gold/40 bg-bg-dark/40 backdrop-blur-sm group transition-transform duration-300 hover:-translate-y-1">
+        <div class="flex items-center justify-center px-5 md:px-6 py-3 md:py-4 bg-gold text-bg-dark min-w-[72px] md:min-w-[88px]">
+          <span class="serif text-3xl md:text-5xl tabular leading-none" data-count-up>{t.booking.score}</span>
+        </div>
+        <div class="px-5 md:px-7 py-3 md:py-4 flex flex-col justify-center">
+          <div class="serif text-base md:text-xl text-ink-white leading-tight">{t.booking.label}</div>
+          <div class="text-[11px] md:text-xs tracking-[0.05em] text-ink-mutedDk tabular mt-1.5 flex items-center gap-2">
+            <span>{t.booking.reviews}</span>
+            <span class="text-line-dark">·</span>
+            <span class="text-gold-soft">{t.booking.source}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-line-dark/40 border border-line-dark/40 mt-12 md:mt-16">
+      {t.stats.map((s, i) => (
+        <div class="bg-bg-dark/70 backdrop-blur-sm px-5 py-6 md:px-7 md:py-8">
+          <div
+            class="serif text-2xl md:text-4xl text-ink-white tabular leading-none"
+            data-count-up
+            data-count-up-delay={String(i * 120)}
+          >
+            {s.value}
+          </div>
+          <div class="eyebrow text-ink-mutedDk mt-2">{s.label}</div>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-10 md:mt-14 flex flex-col sm:flex-row sm:items-center gap-4">
+      <a href="#nda" class="btn-primary w-full sm:w-auto">{t.cta}</a>
+    </div>
+  </div>
+</section>

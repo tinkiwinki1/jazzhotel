@@ -1,0 +1,103 @@
+---
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import Section from '@/components/ui/Section.astro';
+import FxChart from '@/components/charts/FxChart';
+import { getDict, type Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = getDict(locale).currency;
+
+// Diverging chart: zero in the middle, max-abs sets full extent
+const maxAbs = Math.max(...t.peers.map((p) => Math.abs(p.pct)));
+---
+
+<Section id="currency" variant="light">
+  <div class="reveal">
+    <Eyebrow text={t.eyebrow} />
+    <h2 class="h1-section mt-4 max-w-3xl">{t.title}</h2>
+  </div>
+
+  <div class="grid lg:grid-cols-[1.25fr_1fr] gap-12 lg:gap-16 mt-12 md:mt-16">
+    <!-- Chart -->
+    <div class="reveal bg-white/40 border border-line-dim p-6 md:p-8">
+      <div class="eyebrow text-gold-deep mb-5">{t.chartLabel}</div>
+      <FxChart client:visible annotations={t.annotations} />
+      <div class="text-[11px] text-ink-mutedLt italic mt-3">{t.sourceChart}</div>
+    </div>
+
+    <!-- Right column -->
+    <div class="reveal flex flex-col gap-8">
+      <div class="bg-tan-card/60 border border-line-dim p-6 md:p-8">
+        <div class="eyebrow text-gold-deep mb-3">{t.currentRateLabel}</div>
+        <div class="serif text-3xl md:text-4xl text-ink tabular" data-count-up>{t.currentRate}</div>
+        <div class="text-sm text-ink-mutedLt mt-2">{t.currentRateNote}</div>
+      </div>
+
+      <!-- Diverging bar chart -->
+      <div>
+        <div class="eyebrow text-gold-deep mb-2">{t.comparisonLabel}</div>
+
+        <!-- Axis legend -->
+        <div class="grid grid-cols-2 text-[10px] tracking-[0.15em] uppercase text-ink-mutedLt mb-3">
+          <div class="text-left">← {t.axisLabels.weaker}</div>
+          <div class="text-right">{t.axisLabels.stronger} →</div>
+        </div>
+
+        <div class="flex flex-col gap-3.5">
+          {t.peers.map((p) => {
+            const isPositive = p.pct >= 0;
+            const widthPct = (Math.abs(p.pct) / maxAbs) * 50; // half-width max
+            const color =
+              p.pct >= 0
+                ? 'bg-gold'
+                : p.pct >= -10
+                ? 'bg-gold-deep/80'
+                : p.pct >= -25
+                ? 'bg-neg-mild'
+                : 'bg-neg-strong';
+            return (
+              <div class="grid grid-cols-[60px_1fr_56px] gap-3 items-center">
+                <div>
+                  <div class="serif text-base text-ink">{p.code}</div>
+                  <div class="text-[11px] text-ink-mutedLt">{p.label}</div>
+                </div>
+
+                <!-- Diverging track -->
+                <div class="relative h-7 bg-line-dim/25">
+                  <!-- Zero line -->
+                  <div class="absolute left-1/2 top-[-2px] bottom-[-2px] w-px bg-ink/60"></div>
+
+                  {!isPositive && (
+                    <div
+                      class={`absolute top-0 bottom-0 right-1/2 ${color} growth-bar-fill origin-right`}
+                      style={`--bar-pct: ${widthPct}%`}
+                    ></div>
+                  )}
+                  {isPositive && (
+                    <div
+                      class={`absolute top-0 bottom-0 left-1/2 ${color} growth-bar-fill origin-left`}
+                      style={`--bar-pct: ${widthPct}%`}
+                    ></div>
+                  )}
+                </div>
+
+                <div class={`serif text-lg tabular text-right ${isPositive ? 'text-gold-deep' : 'text-ink'}`}>
+                  {isPositive ? '+' : ''}{p.pct}%
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div class="text-[11px] text-ink-mutedLt italic mt-4">{t.sourceComparison}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Takeaway -->
+  <div class="mt-12 md:mt-16 reveal bg-bg-dark text-ink-white p-6 md:p-8 border-l-2 border-gold">
+    <p class="serif italic text-base md:text-lg leading-relaxed text-ink-white">
+      {t.takeaway}
+    </p>
+  </div>
+</Section>

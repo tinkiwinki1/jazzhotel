@@ -1,0 +1,15 @@
+---
+interface Props {
+  id?: string;
+  variant?: 'light' | 'dark';
+  className?: string;
+}
+const { id, variant = 'light', className = '' } = Astro.props;
+const bg = variant === 'dark' ? 'bg-bg-dark text-ink-white' : 'bg-bg-light text-ink';
+---
+
+<section id={id} class={`section-pad ${bg} ${className}`}>
+  <div class="container-content">
+    <slot />
+  </div>
+</section>

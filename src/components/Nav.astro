@@ -1,0 +1,80 @@
+---
+import LangSwitcher from '@/components/ui/LangSwitcher.astro';
+import { getDict, type Locale } from '@/i18n';
+import { Menu } from 'lucide-react';
+
+interface Props {
+  locale: Locale;
+  altHref: string;
+}
+
+const { locale, altHref } = Astro.props;
+const t = getDict(locale);
+
+const links = [
+  { href: '#highlights', label: t.nav.highlights },
+  { href: '#gallery', label: t.nav.gallery },
+  { href: '#financials', label: t.nav.financials },
+  { href: '#transaction', label: t.nav.transaction },
+  { href: '#process', label: t.nav.process },
+];
+---
+
+<header class="fixed top-0 left-0 right-0 z-40 bg-bg-dark/95 backdrop-blur-md border-b border-line-dark/50">
+  <div class="container-content flex items-center justify-between h-16 md:h-20">
+    <a href="#top" class="flex items-baseline gap-2 text-ink-white hover:text-gold transition-colors">
+      <span class="serif text-lg md:text-xl">Jazz Hotel</span>
+      <span class="hidden sm:inline text-xs text-ink-mutedDk tracking-wider">· 4★</span>
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-8">
+      {links.map((l) => (
+        <a
+          href={l.href}
+          class="text-xs uppercase tracking-[0.15em] text-ink-mutedDk hover:text-gold transition-colors"
+        >
+          {l.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-3 md:gap-5">
+      <LangSwitcher locale={locale} altHref={altHref} />
+      <a href="#nda" class="hidden md:inline-flex btn-primary !py-2 !px-4 text-xs">
+        {t.nav.requestNda}
+      </a>
+      <button
+        type="button"
+        data-burger
+        aria-expanded="false"
+        aria-label="Menu"
+        class="lg:hidden p-2 text-ink-white"
+      >
+        <Menu size={22} strokeWidth={1.5} />
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu drawer -->
+  <div
+    data-mobile-menu
+    class="hidden flex-col bg-bg-dark border-t border-line-dark/50 lg:hidden"
+  >
+    <div class="container-content py-6 flex flex-col gap-5">
+      {links.map((l) => (
+        <a
+          href={l.href}
+          class="text-base uppercase tracking-[0.1em] text-ink-white hover:text-gold transition-colors"
+        >
+          {l.label}
+        </a>
+      ))}
+      <a
+        href="#nda"
+        class="btn-primary w-full !py-3 mt-2"
+      >
+        {t.nav.requestNda}
+      </a>
+    </div>
+  </div>
+</header>
