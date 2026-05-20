@@ -1,0 +1,179 @@
+---
+interface Item {
+  metric: string;
+  caption: string;
+  body: string;
+}
+
+interface Props {
+  items: Item[];
+  activeIndex?: number;
+}
+
+const { items, activeIndex = 1 } = Astro.props;
+const item = items[activeIndex];
+const num = String(activeIndex + 1).padStart(2, '0');
+---
+
+<div
+  data-highlights-showcase
+  class="grid lg:grid-cols-2 gap-px bg-[#525252] border border-[#16243E] rounded-[24px] overflow-hidden w-full"
+>
+  <!-- LEFT — featured panel -->
+  <div class="relative bg-[#D5DEE3] p-6 sm:p-8 lg:p-10 min-h-[340px] lg:h-[460px] flex flex-col justify-end gap-4 isolate">
+    <span
+      data-hs-num
+      aria-hidden="true"
+      class="absolute right-10 top-6 serif text-[90px] leading-none text-white/30 select-none pointer-events-none tabular"
+    >
+      {num}
+    </span>
+
+    <div class="relative z-[1] flex flex-col gap-3 w-full">
+      <div
+        data-hs-caption
+        class="text-[11px] font-bold leading-[16px] uppercase tracking-[2px] text-[#525252]"
+      >
+        {item.caption}
+      </div>
+      <div
+        data-hs-metric
+        class="serif text-[64px] sm:text-[80px] lg:text-[100px] leading-[0.85] text-[#222222] tabular"
+      >
+        {item.metric}
+      </div>
+    </div>
+
+    <div class="relative z-[2] flex flex-col gap-12 w-full">
+      <div class="flex flex-col gap-4 max-w-[460px]">
+        <div class="h-px w-full bg-[#525252]"></div>
+        <p data-hs-body class="text-[14px] leading-[22px] text-[#222222]">
+          {item.body}
+        </p>
+      </div>
+
+      <div class="pt-6">
+        <div class="flex items-center gap-1">
+          {items.map((_, i) => (
+            <span
+              data-hs-dot={i}
+              class={`block h-[2px] transition-all ${i === activeIndex ? 'w-8 bg-[#16243E]' : 'w-4 bg-white'}`}
+            ></span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT — 6-row list -->
+  <div class="flex flex-col gap-px bg-[#525252]">
+    {items.map((it, i) => {
+      const isActive = i === activeIndex;
+      return (
+        <button
+          type="button"
+          data-hs-card={i}
+          aria-pressed={isActive ? 'true' : 'false'}
+          class={`flex flex-col gap-2 items-start px-5 py-3 h-[76px] text-left transition-colors ${isActive ? 'bg-[#16243E]' : 'bg-white hover:bg-[#f5f1e8]'}`}
+        >
+          <div class="flex items-baseline justify-between w-full">
+            <span class={`serif text-[22px] leading-[28px] tabular whitespace-nowrap ${isActive ? 'text-white' : 'text-[#16243E]'}`}>
+              {it.metric}
+            </span>
+            <span class={`text-[9px] leading-[14px] tabular tracking-[1.6px] ${isActive ? 'text-[#9CA3AF]' : 'text-[#525252]'}`}>
+              {String(i + 1).padStart(2, '0')}
+            </span>
+          </div>
+          <div class={`text-[11px] font-bold leading-[16px] uppercase tracking-[2px] ${isActive ? 'text-white' : 'text-[#525252]'}`}>
+            {it.caption}
+          </div>
+        </button>
+      );
+    })}
+  </div>
+</div>
+
+<script type="application/json" data-hs-data set:html={JSON.stringify(items)} is:inline />
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-highlights-showcase]');
+  const dataEl = document.querySelector<HTMLElement>('[data-hs-data]');
+  if (root && dataEl) {
+    const items = JSON.parse(dataEl.textContent || '[]') as Array<{
+      metric: string;
+      caption: string;
+      body: string;
+    }>;
+
+    const captionEl = root.querySelector<HTMLElement>('[data-hs-caption]');
+    const metricEl = root.querySelector<HTMLElement>('[data-hs-metric]');
+    const bodyEl = root.querySelector<HTMLElement>('[data-hs-body]');
+    const numEl = root.querySelector<HTMLElement>('[data-hs-num]');
+    const cards = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-hs-card]'));
+    const dots = Array.from(root.querySelectorAll<HTMLElement>('[data-hs-dot]'));
+
+    let active = cards.findIndex((c) => c.getAttribute('aria-pressed') === 'true');
+    if (active < 0) active = 0;
+    let paused = false;
+
+    function setActive(i: number) {
+      if (i === active || !items[i]) return;
+      active = i;
+      const it = items[i];
+
+      if (captionEl) captionEl.textContent = it.caption;
+      if (metricEl) metricEl.textContent = it.metric;
+      if (bodyEl) bodyEl.textContent = it.body;
+      if (numEl) numEl.textContent = String(i + 1).padStart(2, '0');
+
+      cards.forEach((card, idx) => {
+        const isActive = idx === i;
+        card.setAttribute('aria-pressed', String(isActive));
+        card.className = `flex flex-col gap-2 items-start px-5 py-3 h-[76px] text-left transition-colors ${
+          isActive ? 'bg-[#16243E]' : 'bg-white hover:bg-[#f5f1e8]'
+        }`;
+        const metric = card.querySelector('span:first-of-type');
+        const index = card.querySelector('span:nth-of-type(2)');
+        const caption = card.querySelector('div:last-of-type');
+        if (metric) {
+          metric.className = `serif text-[22px] leading-[28px] tabular whitespace-nowrap ${
+            isActive ? 'text-white' : 'text-[#16243E]'
+          }`;
+        }
+        if (index) {
+          index.className = `text-[9px] leading-[14px] tabular tracking-[1.6px] ${
+            isActive ? 'text-[#9CA3AF]' : 'text-[#525252]'
+          }`;
+        }
+        if (caption) {
+          caption.className = `text-[11px] font-bold leading-[16px] uppercase tracking-[2px] ${
+            isActive ? 'text-white' : 'text-[#525252]'
+          }`;
+        }
+      });
+
+      dots.forEach((dot, idx) => {
+        const isActive = idx === i;
+        dot.className = `block h-[2px] transition-all ${
+          isActive ? 'w-8 bg-[#16243E]' : 'w-4 bg-white'
+        }`;
+      });
+    }
+
+    cards.forEach((card, i) => {
+      card.addEventListener('click', () => setActive(i));
+    });
+    dots.forEach((dot, i) => {
+      dot.style.cursor = 'pointer';
+      dot.addEventListener('click', () => setActive(i));
+    });
+
+    root.addEventListener('mouseenter', () => { paused = true; });
+    root.addEventListener('mouseleave', () => { paused = false; });
+
+    setInterval(() => {
+      if (paused) return;
+      setActive((active + 1) % items.length);
+    }, 6000);
+  }
+</script>

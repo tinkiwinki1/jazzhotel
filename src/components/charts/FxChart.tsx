@@ -18,7 +18,7 @@ interface Props {
 
 export default function FxChart({ annotations }: Props) {
   return (
-    <div className="w-full h-[300px] md:h-[360px]">
+    <div className="w-full h-[260px] md:h-[320px]">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 28, right: 24, left: 0, bottom: 8 }}>
           <CartesianGrid stroke="#C9B98C" strokeOpacity={0.35} vertical={false} />

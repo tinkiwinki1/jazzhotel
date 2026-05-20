@@ -1,7 +1,6 @@
 ---
 import Eyebrow from '@/components/ui/Eyebrow.astro';
-import Section from '@/components/ui/Section.astro';
-import HighlightsShowcase from '@/components/sections/HighlightsShowcase';
+import HighlightsShowcase from '@/components/sections/HighlightsShowcaseStatic.astro';
 import { getDict, type Locale } from '@/i18n';
 
 interface Props { locale: Locale }
@@ -9,13 +8,17 @@ const { locale } = Astro.props;
 const t = getDict(locale).highlights;
 ---
 
-<Section id="highlights" variant="dark">
-  <div class="reveal">
-    <Eyebrow text={t.eyebrow} variant="dark" />
-    <h2 class="h1-section text-ink-white mt-4 max-w-3xl">{t.title}</h2>
-  </div>
+<section id="highlights" class="bg-white py-10 md:py-14">
+  <div class="container-content flex flex-col gap-8 md:gap-10">
+    <div class="reveal flex flex-col gap-3 items-start max-w-3xl mx-auto w-full">
+      <Eyebrow text={t.eyebrow} variant="light" />
+      <h2 class="serif text-ink text-2xl sm:text-3xl md:text-4xl leading-[1.1] tracking-[-0.01em]">
+        {t.title}
+      </h2>
+    </div>
 
-  <div class="mt-10 md:mt-14 reveal">
-    <HighlightsShowcase client:visible items={t.items} />
+    <div class="max-w-3xl mx-auto w-full">
+      <HighlightsShowcase items={t.items} />
+    </div>
   </div>
-</Section>
+</section>

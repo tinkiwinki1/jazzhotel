@@ -1,0 +1,47 @@
+---
+import { getDict, type Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = getDict(locale).snapshot;
+---
+
+<section class="bg-bg-dark rounded-b-3xl py-10 md:py-12">
+  <div class="container-content">
+    <div class="max-w-3xl mx-auto grid lg:grid-cols-[320px_1fr] gap-6 lg:gap-10 items-center">
+      <div class="rounded-3xl overflow-hidden h-[260px] sm:h-[320px] lg:h-[380px] reveal">
+        <img
+          src="/images/snapshot.jpg"
+          alt={t.photoAlt}
+          loading="lazy"
+          class="w-full h-full object-cover"
+        />
+      </div>
+
+      <div class="reveal flex flex-col gap-5 md:gap-6">
+        <p class="text-sm md:text-base leading-relaxed text-ink-mutedDk">
+          {t.paragraph.map((seg) => (
+            <span class={seg.highlight ? 'text-ink-white' : ''}>{seg.text}</span>
+          ))}
+        </p>
+
+        <div class="grid grid-cols-2 gap-3 md:gap-4 max-w-[420px]">
+          {t.stats.map((s, i) => (
+            <div class="border border-ink-white/80 rounded-2xl px-3 py-5 md:px-4 md:py-6 flex flex-col gap-1.5">
+              <div
+                class="serif text-3xl md:text-4xl text-ink-white tabular leading-none"
+                data-count-up
+                data-count-up-delay={String(i * 100)}
+              >
+                {s.value}
+              </div>
+              <div class="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em] text-ink-white">
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

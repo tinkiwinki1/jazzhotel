@@ -1,0 +1,170 @@
+---
+interface Props {
+  annotations: { peak: string; today: string };
+}
+const { annotations } = Astro.props;
+
+const data = [
+  { year: 2018, value: 2.49 },
+  { year: 2019, value: 2.81 },
+  { year: 2020, value: 3.10 },
+  { year: 2021, value: 3.22 },
+  { year: 2022, value: 2.92 },
+  { year: 2023, value: 2.62 },
+  { year: 2024, value: 2.72 },
+  { year: 2025, value: 2.74 },
+  { year: 2026, value: 2.69 },
+];
+
+const yMin = 2.30;
+const yMax = 3.50;
+const yTicks = [2.30, 2.60, 2.90, 3.20, 3.50];
+
+const pad = { top: 40, right: 80, bottom: 48, left: 60 };
+const w = 760;
+const h = 460;
+const chartW = w - pad.left - pad.right;
+const chartH = h - pad.top - pad.bottom;
+
+const xAt = (year: number) => pad.left + ((year - 2018) / 8) * chartW;
+const yAt = (v: number) => pad.top + ((yMax - v) / (yMax - yMin)) * chartH;
+
+const pts = data.map((d) => ({ year: d.year, value: d.value, x: xAt(d.year), y: yAt(d.value) }));
+
+function smoothPath(p: Array<{ x: number; y: number }>): string {
+  if (p.length < 2) return '';
+  let d = `M ${p[0].x} ${p[0].y}`;
+  for (let i = 0; i < p.length - 1; i++) {
+    const p0 = i > 0 ? p[i - 1] : p[i];
+    const p1 = p[i];
+    const p2 = p[i + 1];
+    const p3 = i + 2 < p.length ? p[i + 2] : p2;
+    const c1x = p1.x + (p2.x - p0.x) / 6;
+    const c1y = p1.y + (p2.y - p0.y) / 6;
+    const c2x = p2.x - (p3.x - p1.x) / 6;
+    const c2y = p2.y - (p3.y - p1.y) / 6;
+    d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+  }
+  return d;
+}
+
+const linePath = smoothPath(pts);
+const peakPoint = pts[3]; // 2021
+const todayPoint = pts[pts.length - 1]; // 2026
+---
+
+<div class="w-full">
+  <svg
+    viewBox={`0 0 ${w} ${h}`}
+    class="w-full h-auto"
+    role="img"
+    aria-label="USD/GEL rate 2018-2026"
+  >
+    {yTicks.map((t) => {
+      const y = yAt(t);
+      return (
+        <g>
+          <line
+            x1={pad.left}
+            x2={w - pad.right}
+            y1={y}
+            y2={y}
+            stroke="#C9B98C"
+            stroke-opacity="0.35"
+            stroke-width="1"
+          />
+          <text
+            x={pad.left - 10}
+            y={y + 5}
+            text-anchor="end"
+            font-family="Inter, sans-serif"
+            font-size="16"
+            font-weight="600"
+            fill="#222"
+          >
+            {t.toFixed(2)}
+          </text>
+        </g>
+      );
+    })}
+
+    {pts.map((p) => (
+      <text
+        x={p.x}
+        y={h - pad.bottom + 28}
+        text-anchor="middle"
+        font-family="Inter, sans-serif"
+        font-size="16"
+        font-weight="600"
+        fill="#222"
+      >
+        {p.year}
+      </text>
+    ))}
+
+    <path
+      d={linePath}
+      fill="none"
+      stroke="#8B5CF6"
+      stroke-width="3.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    {pts.map((p) => {
+      const isPeak = p.year === 2021;
+      const isToday = p.year === 2026;
+      if (isPeak || isToday) return null;
+      return (
+        <circle
+          cx={p.x}
+          cy={p.y}
+          r="5"
+          fill="#8B5CF6"
+          stroke="#FFFFFF"
+          stroke-width="2"
+        />
+      );
+    })}
+
+    <circle
+      cx={peakPoint.x}
+      cy={peakPoint.y}
+      r="7"
+      fill="#B5443A"
+      stroke="#FFFFFF"
+      stroke-width="2.5"
+    />
+    <text
+      x={peakPoint.x}
+      y={peakPoint.y - 20}
+      text-anchor="middle"
+      font-family="Inter, sans-serif"
+      font-size="16"
+      font-weight="700"
+      fill="#222"
+    >
+      {annotations.peak}
+    </text>
+
+    <circle
+      cx={todayPoint.x}
+      cy={todayPoint.y}
+      r="7"
+      fill="#16243E"
+      stroke="#8B5CF6"
+      stroke-width="2.5"
+    />
+    <text
+      x={todayPoint.x + 14}
+      y={todayPoint.y + 6}
+      text-anchor="start"
+      font-family="Inter, sans-serif"
+      font-size="16"
+      font-weight="700"
+      fill="#222"
+    >
+      {annotations.today}
+    </text>
+  </svg>
+</div>

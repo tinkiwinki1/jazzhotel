@@ -22,19 +22,10 @@ export const en: Dict = {
   },
   hero: {
     eyebrow: 'CONFIDENTIAL INVESTMENT OPPORTUNITY',
-    titleSmall: '4★ Boutique Hotel',
     titleLarge: 'Jazz Hotel',
-    subtitle:
-      'A turnkey 44-key freehold asset with 55% operating margin, 68% revenue growth over two years, and a clear pipeline of brand and F&B upside.',
     capRate: '12.7%',
     capRateLabel: 'IMPLIED CAP RATE',
     capRateNote: 'on 2025 operating profit',
-    stats: [
-      { value: '44', label: 'KEYS' },
-      { value: '2,183 m²', label: 'GFA' },
-      { value: '2019', label: 'OPENED' },
-      { value: '$3.5M', label: 'ASKING' },
-    ],
     cta: 'Get the offer',
     booking: {
       score: '8.9',
@@ -42,6 +33,23 @@ export const en: Dict = {
       reviews: '1,770 reviews',
       source: 'on Booking.com',
     },
+  },
+  snapshot: {
+    photoAlt: 'Jazz Hotel room',
+    paragraph: [
+      { text: '44', highlight: true },
+      { text: ' freehold keys, ' },
+      { text: '12.7%', highlight: true },
+      { text: ' operating margin, ' },
+      { text: '68%', highlight: true },
+      { text: ' revenue growth over two years, and a clear pipeline of brand and F&B upside.' },
+    ],
+    stats: [
+      { value: '44', label: 'KEYS' },
+      { value: '2,183', label: '(m²) GFA' },
+      { value: '2019', label: 'OPENED' },
+      { value: '$3.5', label: '(M) ASKING' },
+    ],
   },
   highlights: {
     eyebrow: '01 · INVESTMENT HIGHLIGHTS',
@@ -127,6 +135,25 @@ export const en: Dict = {
       'A minute of footage — exterior, lobby, rooms, pool and rooftop.',
     play: 'Play',
     duration: '0:56',
+  },
+  strategicLocation: {
+    eyebrow: 'LOCATION',
+    title: 'Strategic location',
+    intro: 'Jazz Hotel sits in one of the most promising tourism zones of Tbilisi — a district actively developing as a new leisure and entertainment hub.',
+    introTrail: 'Immediate neighborhood:',
+    pins: {
+      boulevard: 'Tbilisi Boulevard',
+      gino: 'Gino Paradise',
+      zoo: 'Tbilisi new zoo',
+      hotel: 'Jazz Hotel',
+    },
+    bullets: [
+      'Gino Paradise — the largest water park in Tbilisi',
+      'Tbilisi Boulevard — a major new development set to become one of the city\'s top tourism destinations',
+      'New Tbilisi Zoo — opening this summer',
+    ],
+    closing:
+      'This location ensures strong tourist flow, growing neighborhood appeal, and durable long-term investment potential. Jazz Hotel sits at a point where the future of Tbilisi\'s tourism infrastructure is already taking shape.',
   },
   location: {
     eyebrow: '03 · LOCATION',
@@ -300,7 +327,7 @@ export const en: Dict = {
   },
   team: {
     eyebrow: '08 · TEAM · MANAGEMENT',
-    title: 'Team stays on — 10% of operating profit',
+    title: 'Team stays on — 15% of operating profit',
     trackRecordLabel: "TEAM'S TRACK RECORD",
     trackRecord: [
       { metric: '+124%', label: 'Operating profit, 2 years ($198K → $444K)' },
@@ -309,7 +336,7 @@ export const en: Dict = {
       { metric: '6+ yrs', label: 'Asset, supplier, OTA-channel and B2B know-how' },
     ],
     feeStructureLabel: 'FEE STRUCTURE',
-    feeValue: '10%',
+    feeValue: '15%',
     feeUnit: 'of operating profit',
     feeBullets: [
       'Performance-only — no fixed base management fee',

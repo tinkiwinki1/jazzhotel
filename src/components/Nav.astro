@@ -1,5 +1,4 @@
 ---
-import LangSwitcher from '@/components/ui/LangSwitcher.astro';
 import { getDict, type Locale } from '@/i18n';
 import { Menu } from 'lucide-react';
 
@@ -20,29 +19,51 @@ const links = [
 ];
 ---
 
-<header class="fixed top-0 left-0 right-0 z-40 bg-bg-dark/95 backdrop-blur-md border-b border-line-dark/50">
-  <div class="container-content flex items-center justify-between h-16 md:h-20">
-    <a href="#top" class="flex items-baseline gap-2 text-ink-white hover:text-gold transition-colors">
-      <span class="serif text-lg md:text-xl">Jazz Hotel</span>
-      <span class="hidden sm:inline text-xs text-ink-mutedDk tracking-wider">· 4★</span>
-    </a>
-
-    <nav class="hidden lg:flex items-center gap-8">
+<header
+  data-nav
+  class="fixed top-0 left-0 right-0 z-40 transition-colors duration-300"
+>
+  <div class="w-full px-6 md:px-10 lg:px-14 grid grid-cols-[1fr_auto_1fr] items-center h-16 md:h-20 pt-2 md:pt-4 gap-4">
+    <!-- Left: nav links -->
+    <nav class="hidden lg:flex items-center gap-2 justify-self-start">
       {links.map((l) => (
         <a
           href={l.href}
-          class="text-xs uppercase tracking-[0.15em] text-ink-mutedDk hover:text-gold transition-colors"
+          class="bg-bg-dark/30 hover:bg-bg-dark/55 backdrop-blur-sm rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-ink-white transition-colors"
         >
           {l.label}
         </a>
       ))}
     </nav>
 
-    <div class="flex items-center gap-3 md:gap-5">
-      <LangSwitcher locale={locale} altHref={altHref} />
-      <a href="#nda" class="hidden md:inline-flex btn-primary !py-2 !px-4 text-xs">
+    <!-- Center: brand -->
+    <a
+      href="#top"
+      class="flex items-baseline gap-2 text-ink-white hover:text-gold-soft transition-colors justify-self-start lg:justify-self-center"
+    >
+      <span class="serif text-xl md:text-2xl leading-none">Jazz Hotel</span>
+      <span class="hidden sm:inline text-sm md:text-base tracking-wider leading-none">· 4★</span>
+    </a>
+
+    <!-- Right: lang switcher + CTA -->
+    <div class="flex items-center gap-3 md:gap-5 justify-self-end">
+      <div class="flex items-center text-[11px] md:text-xs tracking-[0.15em] uppercase text-ink-white">
+        <span class={`px-1 ${locale === 'ru' ? '' : 'opacity-50'}`}>
+          {locale === 'ru' ? 'RU' : <a href="/" class="hover:opacity-100">RU</a>}
+        </span>
+        <span class="opacity-40">/</span>
+        <span class={`px-1 ${locale === 'en' ? '' : 'opacity-50'}`}>
+          {locale === 'en' ? 'EN' : <a href={altHref} class="hover:opacity-100">EN</a>}
+        </span>
+      </div>
+
+      <a
+        href="#nda"
+        class="hidden md:inline-flex bg-white text-ink rounded-full px-4 py-2 text-[11px] xl:text-xs font-medium tracking-[0.1em] uppercase hover:bg-gold-soft hover:text-ink transition-colors"
+      >
         {t.nav.requestNda}
       </a>
+
       <button
         type="button"
         data-burger
@@ -64,17 +85,32 @@ const links = [
       {links.map((l) => (
         <a
           href={l.href}
-          class="text-base uppercase tracking-[0.1em] text-ink-white hover:text-gold transition-colors"
+          class="text-base uppercase tracking-[0.1em] text-ink-white hover:text-gold-soft transition-colors"
         >
           {l.label}
         </a>
       ))}
       <a
         href="#nda"
-        class="btn-primary w-full !py-3 mt-2"
+        class="bg-white text-ink rounded-full px-5 py-3 text-sm font-medium tracking-[0.1em] uppercase text-center"
       >
         {t.nav.requestNda}
       </a>
     </div>
   </div>
 </header>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  if (nav) {
+    const onScroll = () => {
+      if (window.scrollY > 40) {
+        nav.classList.add('bg-bg-dark/85', 'backdrop-blur-md', 'border-b', 'border-line-dark/40');
+      } else {
+        nav.classList.remove('bg-bg-dark/85', 'backdrop-blur-md', 'border-b', 'border-line-dark/40');
+      }
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+</script>

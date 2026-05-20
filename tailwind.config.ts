@@ -8,14 +8,14 @@ export default {
       colors: {
         bg: {
           light: '#F5F1E8',
-          dark: '#0F1B2A',
+          dark: '#162536',
         },
         card: {
-          dark: '#162536',
+          dark: '#1F2937',
         },
         gold: {
           DEFAULT: '#B89651',
-          soft: '#C9A961',
+          soft: '#C9B98C',
           deep: '#8A7340',
         },
         tan: {

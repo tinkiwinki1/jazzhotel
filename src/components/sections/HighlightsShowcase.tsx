@@ -12,13 +12,12 @@ interface Props {
 }
 
 export default function HighlightsShowcase({ items }: Props) {
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(1);
   const [runKey, setRunKey] = useState(0);
   const [paused, setPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const inViewRef = useRef(false);
 
-  // Trigger count-up first time the section enters viewport
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -37,7 +36,6 @@ export default function HighlightsShowcase({ items }: Props) {
     return () => io.disconnect();
   }, []);
 
-  // Auto-rotate every 6s, pause on hover/focus
   useEffect(() => {
     if (paused) return;
     const id = window.setInterval(() => {
@@ -63,59 +61,67 @@ export default function HighlightsShowcase({ items }: Props) {
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
-      className="grid lg:grid-cols-[1.4fr_1fr] gap-px bg-line-dark/40 border border-line-dark/40"
+      className="grid lg:grid-cols-2 gap-px bg-[#525252] border border-[#16243E] rounded-[24px] overflow-hidden w-full"
     >
-      {/* Featured panel */}
-      <div className="relative bg-card-dark p-7 md:p-12 lg:p-14 min-h-[360px] md:min-h-[440px] overflow-hidden flex flex-col justify-between">
-        {/* Ghost index */}
+      {/* LEFT — featured panel */}
+      <div className="relative bg-[#D5DEE3] p-8 sm:p-10 lg:p-[56px] min-h-[440px] lg:h-[592px] flex flex-col justify-end gap-5 isolate">
+        {/* Ghost index — top-right */}
         <span
           aria-hidden="true"
-          className="serif absolute -top-6 -right-2 md:top-2 md:right-6 text-[180px] md:text-[260px] leading-none text-gold/[0.06] select-none pointer-events-none tabular"
+          className="absolute right-[51px] top-[29.6px] serif text-[130px] leading-none text-white/30 select-none pointer-events-none tabular"
         >
           {num}
         </span>
 
-        <div className="relative">
-          <div className="eyebrow text-gold-soft mb-4">{item.caption}</div>
+        {/* Metric + caption block */}
+        <div className="relative z-[1] flex flex-col gap-4 w-full">
+          <div className="text-[12px] font-bold leading-[18px] uppercase tracking-[2.4px] text-[#525252]">
+            {item.caption}
+          </div>
           <div
             key={runKey + '-num'}
-            className="serif text-6xl md:text-8xl lg:text-[112px] text-gold tabular leading-none"
+            className="serif text-[88px] sm:text-[110px] lg:text-[140px] leading-[0.8] text-[#222222] tabular"
           >
             <CountUp raw={item.metric} runKey={runKey} />
           </div>
         </div>
 
-        <div className="relative mt-6 md:mt-10 max-w-xl">
-          <div className="h-px w-12 bg-gold mb-5"></div>
-          <p
-            key={runKey + '-body'}
-            className="text-sm md:text-base text-ink-mutedDk leading-relaxed animate-fade-in-up"
-          >
-            {item.body}
-          </p>
-        </div>
-
-        {/* Progress dots */}
-        <div className="relative mt-8 md:mt-10 flex items-center gap-2.5">
-          {items.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => choose(i)}
-              aria-label={`${i + 1}`}
-              className="group/dot p-1.5 -m-1.5"
+        {/* Description + dots block, gap-80 between them */}
+        <div className="relative z-[2] flex flex-col gap-20 w-full">
+          <div className="flex flex-col gap-5 max-w-[576px]">
+            <div className="h-px w-full bg-[#525252]"></div>
+            <p
+              key={runKey + '-body'}
+              className="text-[16px] leading-[24px] text-[#222222] animate-fade-in-up"
             >
-              <span
-                className={`block h-0.5 transition-all ${
-                  i === active ? 'w-10 bg-gold' : 'w-5 bg-line-dark group-hover/dot:bg-gold/50'
-                }`}
-              />
-            </button>
-          ))}
+              {item.body}
+            </p>
+          </div>
+
+          {/* Progress indicators */}
+          <div className="pt-[40px]">
+            <div className="flex items-center gap-1">
+              {items.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => choose(i)}
+                  aria-label={`${i + 1}`}
+                  className="p-1.5 -m-1.5 group/dot"
+                >
+                  <span
+                    className={`block h-[2px] transition-all ${
+                      i === active ? 'w-[40px] bg-[#16243E]' : 'w-[20px] bg-white group-hover/dot:bg-[#16243E]/40'
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Tiles */}
-      <div className="grid grid-cols-2 lg:grid-cols-1 gap-px bg-line-dark/40">
+      {/* RIGHT — 6-row list */}
+      <div className="flex flex-col gap-px bg-[#525252]">
         {items.map((it, i) => {
           const isActive = i === active;
           return (
@@ -123,30 +129,30 @@ export default function HighlightsShowcase({ items }: Props) {
               key={i}
               type="button"
               onClick={() => choose(i)}
-              className={`group relative text-left p-5 md:p-6 transition-colors duration-300 overflow-hidden ${
-                isActive
-                  ? 'bg-gold/10'
-                  : 'bg-card-dark hover:bg-card-dark/60'
+              className={`flex flex-col gap-3 items-start px-6 py-4 h-[98px] text-left transition-colors ${
+                isActive ? 'bg-[#16243E]' : 'bg-white hover:bg-[#f5f1e8]'
               }`}
               aria-pressed={isActive}
             >
-              {/* Active accent */}
-              <span
-                className={`absolute left-0 top-0 bottom-0 w-[2px] bg-gold transition-transform origin-top duration-500 ${
-                  isActive ? 'scale-y-100' : 'scale-y-0 group-hover:scale-y-50'
-                }`}
-              />
-              <div className="flex items-baseline justify-between gap-3">
-                <span className="serif text-2xl md:text-3xl text-gold tabular leading-none whitespace-nowrap">
+              <div className="flex items-baseline justify-between w-full">
+                <span
+                  className={`serif text-[30px] leading-[36px] tabular whitespace-nowrap ${
+                    isActive ? 'text-white' : 'text-[#16243E]'
+                  }`}
+                >
                   {it.metric}
                 </span>
-                <span className="text-[10px] tracking-[0.2em] text-ink-mutedDk tabular shrink-0">
+                <span
+                  className={`text-[10px] leading-[15px] tabular tracking-[2px] ${
+                    isActive ? 'text-[#9CA3AF]' : 'text-[#525252]'
+                  }`}
+                >
                   {String(i + 1).padStart(2, '0')}
                 </span>
               </div>
               <div
-                className={`mt-3 eyebrow transition-colors ${
-                  isActive ? 'text-gold-soft' : 'text-ink-mutedDk group-hover:text-ink-white'
+                className={`text-[12px] font-bold leading-[18px] uppercase tracking-[2.4px] ${
+                  isActive ? 'text-white' : 'text-[#525252]'
                 }`}
               >
                 {it.caption}

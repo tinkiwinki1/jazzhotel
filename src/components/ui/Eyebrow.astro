@@ -4,7 +4,12 @@ interface Props {
   variant?: 'light' | 'dark';
 }
 const { text, variant = 'light' } = Astro.props;
-const color = variant === 'dark' ? 'text-gold-soft' : 'text-gold-deep';
 ---
 
-<div class={`eyebrow ${color}`}>{text}</div>
+{variant === 'light' ? (
+  <div class="inline-flex items-center bg-bg-dark text-white px-4 py-2 rounded-full text-[11px] md:text-xs font-bold uppercase tracking-[0.2em]">
+    {text}
+  </div>
+) : (
+  <div class="eyebrow text-gold-soft">{text}</div>
+)}

@@ -1,5 +1,4 @@
 ---
-import Eyebrow from '@/components/ui/Eyebrow.astro';
 import { getDict, type Locale } from '@/i18n';
 
 interface Props { locale: Locale }
@@ -7,16 +6,24 @@ const { locale } = Astro.props;
 const t = getDict(locale).video;
 ---
 
-<section id="video" class="bg-bg-dark text-ink-white section-pad">
-  <div class="container-content">
-    <div class="reveal max-w-3xl">
-      <Eyebrow text={t.eyebrow} variant="dark" />
-      <h2 class="h1-section text-ink-white mt-4">{t.title}</h2>
-      <p class="text-base md:text-lg text-ink-mutedDk mt-4">{t.subtitle}</p>
+<section id="video" class="bg-[#ededed] pt-14 pb-8 rounded-t-3xl">
+  <div class="container-content flex flex-col gap-10">
+    <div class="reveal flex flex-col gap-3 items-start max-w-3xl mx-auto">
+      <div class="inline-flex items-center bg-bg-dark text-white px-3 py-1.5 rounded-3xl text-[11px] font-bold uppercase tracking-[2px]">
+        {t.eyebrow}
+      </div>
+      <h2 class="serif text-[#222] text-2xl sm:text-3xl md:text-4xl leading-[1.1] tracking-[-0.01em]">
+        {t.title}
+      </h2>
+      <p class="text-[14px] sm:text-[15px] leading-[24px] text-[#525252]">
+        {t.subtitle}
+      </p>
     </div>
 
-    <div class="reveal mt-10 md:mt-14 relative aspect-video bg-card-dark border border-line-dark/40 overflow-hidden group" data-video-wrap>
-      <!-- Poster -->
+    <div
+      class="reveal max-w-3xl mx-auto w-full relative aspect-video bg-bg-dark border border-bg-dark/40 rounded-3xl overflow-hidden group"
+      data-video-wrap
+    >
       <button
         type="button"
         data-video-play
@@ -29,18 +36,17 @@ const t = getDict(locale).video;
           loading="lazy"
           class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
         />
-        <span class="absolute inset-0 bg-bg-dark/30 group-hover:bg-bg-dark/15 transition-colors"></span>
+        <span class="absolute inset-0 bg-bg-dark/25 group-hover:bg-bg-dark/15 transition-colors"></span>
         <span class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span class="flex items-center justify-center w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-gold bg-bg-dark/40 backdrop-blur-sm transition-transform group-hover:scale-110">
-            <span class="serif text-3xl md:text-4xl text-gold ml-1.5">▶</span>
+          <span class="flex items-center justify-center w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-[#c77e39] bg-bg-dark/40 backdrop-blur-sm transition-transform group-hover:scale-110">
+            <span class="serif text-3xl md:text-4xl text-[#c77e39] ml-1">▶</span>
           </span>
         </span>
-        <span class="absolute bottom-4 right-4 text-xs tracking-[0.2em] uppercase text-ink-white/85 bg-bg-dark/60 px-3 py-1.5 tabular">
+        <span class="absolute bottom-4 right-4 text-[12px] tracking-[2.4px] uppercase text-[#F5F1E8]/85 bg-bg-dark/60 px-3 py-1.5 tabular">
           {t.duration}
         </span>
       </button>
 
-      <!-- Video element (hidden until play) -->
       <video
         data-video-el
         class="absolute inset-0 w-full h-full object-cover hidden"

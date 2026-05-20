@@ -1,0 +1,125 @@
+---
+interface Props {
+  labels: { revenue: string; profit: string; unit: string };
+}
+const { labels } = Astro.props;
+
+const data = [
+  { year: '2023', revenue: 480, profit: 198 },
+  { year: '2024', revenue: 649, profit: 285 },
+  { year: '2025', revenue: 805, profit: 444 },
+];
+
+const yMax = 1000;
+const yTicks = [0, 250, 500, 750, 1000];
+
+const pad = { top: 24, right: 24, bottom: 56, left: 60 };
+const w = 560;
+const h = 380;
+const chartW = w - pad.left - pad.right;
+const chartH = h - pad.top - pad.bottom;
+
+const groupW = chartW / data.length;
+const barW = 36;
+const barGap = 8;
+
+const yAt = (v: number) => pad.top + ((yMax - v) / yMax) * chartH;
+---
+
+<div class="w-full flex flex-col gap-3">
+  <svg
+    viewBox={`0 0 ${w} ${h}`}
+    class="w-full h-auto"
+    role="img"
+    aria-label="Revenue vs operating profit, 2023-2025"
+  >
+    {yTicks.map((t) => {
+      const y = yAt(t);
+      return (
+        <g>
+          <line
+            x1={pad.left}
+            x2={w - pad.right}
+            y1={y}
+            y2={y}
+            stroke="#525252"
+            stroke-opacity="0.2"
+            stroke-width="1"
+          />
+          <text
+            x={pad.left - 10}
+            y={y + 5}
+            text-anchor="end"
+            font-family="Inter, sans-serif"
+            font-size="14"
+            font-weight="600"
+            fill="#222"
+          >
+            {t}
+          </text>
+        </g>
+      );
+    })}
+
+    {data.map((d, i) => {
+      const groupCx = pad.left + groupW * i + groupW / 2;
+      const revX = groupCx - barW - barGap / 2;
+      const profX = groupCx + barGap / 2;
+      const revY = yAt(d.revenue);
+      const profY = yAt(d.profit);
+      const baseY = yAt(0);
+      return (
+        <g>
+          <rect
+            x={revX}
+            y={revY}
+            width={barW}
+            height={baseY - revY}
+            fill="#E6A25B"
+            rx="2"
+          />
+          <rect
+            x={profX}
+            y={profY}
+            width={barW}
+            height={baseY - profY}
+            fill="#16243E"
+            rx="2"
+          />
+          <text
+            x={groupCx}
+            y={h - pad.bottom + 24}
+            text-anchor="middle"
+            font-family="Inter, sans-serif"
+            font-size="15"
+            font-weight="600"
+            fill="#222"
+          >
+            {d.year}
+          </text>
+        </g>
+      );
+    })}
+
+    <line
+      x1={pad.left}
+      x2={w - pad.right}
+      y1={yAt(0)}
+      y2={yAt(0)}
+      stroke="#525252"
+      stroke-opacity="0.5"
+      stroke-width="1"
+    />
+  </svg>
+
+  <div class="flex items-center gap-6 text-[13px] text-[#222] pl-3">
+    <span class="flex items-center gap-2">
+      <span class="inline-block w-3.5 h-3.5 bg-[#E6A25B] rounded-sm"></span>
+      {labels.revenue}
+    </span>
+    <span class="flex items-center gap-2">
+      <span class="inline-block w-3.5 h-3.5 bg-[#16243E] rounded-sm"></span>
+      {labels.profit}
+    </span>
+  </div>
+</div>

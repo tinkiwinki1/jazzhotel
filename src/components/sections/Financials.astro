@@ -1,89 +1,259 @@
 ---
-import Eyebrow from '@/components/ui/Eyebrow.astro';
-import Section from '@/components/ui/Section.astro';
-import FinancialChart from '@/components/charts/FinancialChart';
-import FinancialsHero from '@/components/sections/FinancialsHero';
+import FinancialChartStatic from '@/components/sections/FinancialChartStatic.astro';
 import { getDict, type Locale } from '@/i18n';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const t = getDict(locale).financials;
+
+const YEARS = [
+  { year: '2023', revenue: 480, profit: 198, margin: 41 },
+  { year: '2024', revenue: 649, profit: 285, margin: 44 },
+  { year: '2025', revenue: 805, profit: 444, margin: 55 },
+];
+
+const ppSuffix = locale === 'ru' ? ' пп' : ' pp';
 ---
 
-<Section id="financials" variant="light">
-  <div class="reveal">
-    <Eyebrow text={t.eyebrow} />
-    <h2 class="h1-section mt-4 max-w-3xl">{t.title}</h2>
-  </div>
+<section id="financials" class="bg-[#ededed] py-14 md:py-16 rounded-t-3xl">
+  <div class="container-content">
+    <div class="max-w-3xl mx-auto flex flex-col gap-10" data-financials>
+    <!-- Header row: title left, year tabs right -->
+    <div class="reveal flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+      <div class="flex flex-col gap-4">
+        <div class="inline-flex items-center bg-bg-dark text-white px-4 py-2 rounded-3xl text-[12px] font-bold uppercase tracking-[2.4px] leading-[18px] self-start">
+          {t.eyebrow}
+        </div>
+        <h2 class="serif text-[#1F2937] text-2xl sm:text-3xl md:text-4xl leading-[1.1] tracking-[-0.01em] max-w-2xl">
+          {t.title}
+        </h2>
+      </div>
 
-  <!-- Hero year-switcher with 3 cards -->
-  <div class="mt-10 md:mt-14 reveal">
-    <FinancialsHero client:visible labels={t.hero} locale={locale} />
-  </div>
+      <div class="flex shrink-0" role="tablist">
+        {YEARS.map((y, i) => {
+          const isActive = i === YEARS.length - 1;
+          return (
+            <button
+              type="button"
+              data-year-tab={i}
+              role="tab"
+              aria-selected={isActive ? 'true' : 'false'}
+              class={`relative flex items-center justify-center w-[80px] md:w-[98px] h-12 text-sm md:text-base tabular tracking-[0.05em] transition-colors ${isActive ? 'text-[#222]' : 'text-[#525252] hover:text-[#222]'}`}
+            >
+              {y.year}
+              <span class={`absolute -bottom-px left-2 right-2 h-[2px] bg-[#16243E] origin-left transition-transform ${isActive ? 'scale-x-100' : 'scale-x-0'}`}></span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
 
-  <!-- P&L table + chart -->
-  <div class="grid lg:grid-cols-[1fr_1fr] gap-10 lg:gap-14 mt-12 md:mt-16 items-start">
-    <div class="reveal">
-      <div class="eyebrow text-gold-deep mb-5">{t.tableLabel}</div>
-      <div class="overflow-x-auto">
-        <table class="w-full border-t border-line-dim/60 text-sm md:text-[15px]">
+    <!-- 3 metric cards -->
+    <div class="reveal grid md:grid-cols-3 gap-5">
+      <!-- Card 1 — Revenue (white) -->
+      <div data-card="revenue" class="bg-white rounded-2xl px-5 py-5 md:px-6 md:py-6 flex flex-col gap-4">
+        <div class="flex items-baseline justify-between gap-3 w-full">
+          <div class="text-[12px] font-bold uppercase tracking-[2.4px] leading-[18px] text-[#16243E]">{t.hero.revenue}</div>
+          <div class="text-[10px] leading-[15px] uppercase tracking-[1.5px] text-[#525252] shrink-0">{t.hero.unit}</div>
+        </div>
+        <div data-metric class="serif text-3xl md:text-4xl leading-none tabular text-[#1F2937]">$805K</div>
+        <div class="flex flex-col gap-2.5 pt-1">
+          <div class="grid grid-cols-[80px_1fr] items-baseline gap-3">
+            <span data-yoy class="serif text-xl leading-7 tabular text-[#222]">+24%</span>
+            <span data-yoy-label class="text-[11px] tracking-[1.65px] uppercase leading-4 text-[#525252]">{t.hero.yoyLabel} · {t.hero.vs} 2024</span>
+          </div>
+          <div class="grid grid-cols-[80px_1fr] items-baseline gap-3">
+            <span data-twoy class="serif text-xl leading-7 tabular text-[#222]">+68%</span>
+            <span data-twoy-label class="text-[11px] tracking-[1.65px] uppercase leading-4 text-[#525252]">{t.hero.twoYearLabel} · {t.hero.vs} 2023</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 pt-1" data-dots>
+          <span class="block h-[6px] w-3 bg-[#D5DEE3]"></span>
+          <span class="block h-[6px] w-3 bg-[#D5DEE3]"></span>
+          <span class="block h-[6px] w-8 bg-[#16243E]"></span>
+        </div>
+      </div>
+
+      <!-- Card 2 — Profit (dark navy) -->
+      <div data-card="profit" class="bg-[#16243E] rounded-2xl px-5 py-5 md:px-6 md:py-6 flex flex-col gap-4">
+        <div class="flex items-baseline justify-between gap-3 w-full">
+          <div class="text-[12px] font-bold uppercase tracking-[2.4px] leading-[18px] text-white">{t.hero.profit}</div>
+          <div class="text-[10px] leading-[15px] uppercase tracking-[1.5px] text-white/70 shrink-0">{t.hero.unit}</div>
+        </div>
+        <div data-metric class="serif text-3xl md:text-4xl leading-none tabular text-white">$444K</div>
+        <div class="flex flex-col gap-2.5 pt-1">
+          <div class="grid grid-cols-[80px_1fr] items-baseline gap-3">
+            <span data-yoy class="serif text-xl leading-7 tabular text-white">+56%</span>
+            <span data-yoy-label class="text-[11px] tracking-[1.65px] uppercase leading-4 text-white/70">{t.hero.yoyLabel} · {t.hero.vs} 2024</span>
+          </div>
+          <div class="grid grid-cols-[80px_1fr] items-baseline gap-3">
+            <span data-twoy class="serif text-xl leading-7 tabular text-white">+124%</span>
+            <span data-twoy-label class="text-[11px] tracking-[1.65px] uppercase leading-4 text-white/70">{t.hero.twoYearLabel} · {t.hero.vs} 2023</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 pt-1" data-dots>
+          <span class="block h-[6px] w-3 bg-[#D5DEE3]"></span>
+          <span class="block h-[6px] w-3 bg-[#D5DEE3]"></span>
+          <span class="block h-[6px] w-8 bg-white"></span>
+        </div>
+      </div>
+
+      <!-- Card 3 — Margin (white) -->
+      <div data-card="margin" class="bg-white rounded-2xl px-5 py-5 md:px-6 md:py-6 flex flex-col gap-4">
+        <div class="flex items-baseline justify-between gap-3 w-full">
+          <div class="text-[12px] font-bold uppercase tracking-[2.4px] leading-[18px] text-[#16243E]">{t.hero.margin}</div>
+        </div>
+        <div data-metric class="serif text-3xl md:text-4xl leading-none tabular text-[#1F2937]">55%</div>
+        <div class="flex flex-col gap-2.5 pt-1">
+          <div class="grid grid-cols-[80px_1fr] items-baseline gap-3">
+            <span data-yoy class="serif text-xl leading-7 tabular text-[#222]">+11{ppSuffix}</span>
+            <span data-yoy-label class="text-[11px] tracking-[1.65px] uppercase leading-4 text-[#525252]">{t.hero.yoyLabel} · {t.hero.vs} 2024</span>
+          </div>
+          <div class="grid grid-cols-[80px_1fr] items-baseline gap-3">
+            <span data-twoy class="serif text-xl leading-7 tabular text-[#222]">+14{ppSuffix}</span>
+            <span data-twoy-label class="text-[11px] tracking-[1.65px] uppercase leading-4 text-[#525252]">{t.hero.twoYearLabel} · {t.hero.vs} 2023</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 pt-1" data-dots>
+          <span class="block h-[6px] w-3 bg-[#D5DEE3]"></span>
+          <span class="block h-[6px] w-3 bg-[#D5DEE3]"></span>
+          <span class="block h-[6px] w-8 bg-[#16243E]"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- P&L table + bar chart -->
+    <div class="grid lg:grid-cols-2 gap-8 lg:gap-10 items-start">
+      <div class="reveal flex flex-col gap-4">
+        <div class="text-[12px] font-bold uppercase tracking-[2.4px] leading-[18px] text-[#16243E]">{t.tableLabel}</div>
+        <table class="w-full text-[15px] leading-5 border-t border-[#525252]/60">
           <thead>
-            <tr class="border-b border-line-dim/60">
+            <tr class="border-b border-[#525252]/60">
               {t.table.headers.map((h, i) => (
-                <th
-                  class={`py-3 text-[11px] tracking-[0.15em] uppercase text-ink-mutedLt font-medium ${
-                    i === 0 ? 'text-left' : 'text-right'
-                  }`}
-                >
-                  {h}
-                </th>
+                <th class={`py-3 text-[11px] tracking-[1.65px] uppercase text-[#525252] font-normal leading-5 ${i === 0 ? 'text-left' : 'text-right'}`}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {t.table.rows.map((row) => (
-              <tr class="border-b border-line-dim/40">
-                <td class={`py-3 ${row.bold ? 'font-semibold' : ''} ${row.italic ? 'italic text-ink-mutedLt' : ''}`}>
+              <tr class="border-b border-[#525252]/40">
+                <td class={`py-3 ${row.bold ? 'font-bold text-[#222]' : 'text-[#222]'} ${row.italic ? 'italic text-[#222]' : ''}`}>
                   {row.name}
                 </td>
-                {row.values.map((v, i) => (
-                  <td
-                    class={`py-3 text-right tabular ${row.bold ? 'font-semibold text-gold-deep' : ''} ${row.italic ? 'italic text-ink-mutedLt' : ''} ${
-                      i === row.values.length - 1 && !row.italic ? 'text-gold-deep' : ''
-                    }`}
-                  >
-                    {v}
-                  </td>
-                ))}
+                {row.values.map((v, i) => {
+                  const isDelta = i === row.values.length - 1;
+                  const cls = row.bold ? 'font-bold text-[#16243E]' : row.italic ? 'italic text-[#525252]' : isDelta ? 'text-[#16243E]' : 'text-[#222]';
+                  return <td class={`py-3 text-right tabular ${cls}`}>{v}</td>;
+                })}
               </tr>
             ))}
           </tbody>
         </table>
+        <p class="text-[11px] italic text-[#525252] leading-[18px] mt-1">{t.disclaimer}</p>
       </div>
-      <p class="text-[11px] text-ink-mutedLt italic mt-4 leading-relaxed">{t.disclaimer}</p>
+
+      <div class="reveal bg-white rounded-2xl p-5 md:p-6 flex flex-col gap-3">
+        <div class="text-[12px] font-bold uppercase tracking-[2.4px] leading-[18px] text-[#16243E]">{t.chart.unit}</div>
+        <FinancialChartStatic labels={t.chart} />
+      </div>
     </div>
 
-    <div class="reveal bg-white/40 border border-line-dim p-6 md:p-7">
-      <div class="eyebrow text-gold-deep mb-4">{t.chart.unit}</div>
-      <FinancialChart client:visible labels={t.chart} />
-    </div>
-  </div>
-
-  <!-- Punchline bar -->
-  <div class="mt-12 md:mt-16 reveal bg-bg-dark text-ink-white">
-    <div class="grid md:grid-cols-[1fr_auto_1fr] items-center">
-      <div class="p-6 md:p-9 text-sm md:text-base text-ink-mutedDk leading-relaxed text-right md:pr-12">
-        {t.punchline.lead}
-      </div>
-      <div class="p-6 md:p-10 border-y md:border-y-0 md:border-x border-line-dark/40 bg-card-dark text-center">
-        <div class="serif text-4xl md:text-6xl text-gold tabular leading-none" data-count-up>
-          {t.punchline.cap}
+    <!-- Punchline -->
+    <div class="reveal bg-bg-dark rounded-3xl p-3">
+      <div class="grid md:grid-cols-[1fr_auto_1fr] items-center gap-4 md:gap-0">
+        <div class="px-6 md:px-9 text-[15px] md:text-base leading-6 text-white md:text-right">
+          {t.punchline.lead}
         </div>
-        <div class="eyebrow text-gold-soft mt-3">{t.punchline.headline}</div>
-      </div>
-      <div class="p-6 md:p-9 text-sm md:text-base text-ink-mutedDk leading-relaxed md:pl-12">
-        {t.punchline.tail}
+        <div class="bg-[#D5DEE3] rounded-3xl px-8 py-7 md:px-10 md:py-9 flex flex-col items-center gap-3">
+          <div class="serif text-5xl md:text-6xl text-[#16243E] tabular leading-none" data-count-up>
+            {t.punchline.cap}
+          </div>
+          <div class="text-[12px] font-bold uppercase tracking-[2.4px] leading-[18px] text-[#16243E] text-center">
+            {t.punchline.headline}
+          </div>
+        </div>
+        <div class="px-6 md:px-9 text-[15px] md:text-base leading-6 text-white">
+          {t.punchline.tail}
+        </div>
       </div>
     </div>
+    </div>
   </div>
-</Section>
+</section>
+
+<script define:vars={{ YEARS, ppSuffix }}>
+  const root = document.querySelector('[data-financials]');
+  if (root) {
+    const tabs = Array.from(root.querySelectorAll('[data-year-tab]'));
+    const cards = {
+      revenue: root.querySelector('[data-card="revenue"]'),
+      profit: root.querySelector('[data-card="profit"]'),
+      margin: root.querySelector('[data-card="margin"]'),
+    };
+
+    function pct(a, b) {
+      return Math.round((a / b - 1) * 100);
+    }
+    function fmt(n, suffix) {
+      return `${n > 0 ? '+' : ''}${n}${suffix}`;
+    }
+
+    function update(i) {
+      const cur = YEARS[i];
+      const prev = i > 0 ? YEARS[i - 1] : null;
+      const first = YEARS[0];
+
+      tabs.forEach((t, ti) => {
+        const isActive = ti === i;
+        t.setAttribute('aria-selected', String(isActive));
+        t.classList.toggle('text-[#222]', isActive);
+        t.classList.toggle('text-[#525252]', !isActive);
+        const underline = t.querySelector('span');
+        if (underline) {
+          underline.classList.toggle('scale-x-100', isActive);
+          underline.classList.toggle('scale-x-0', !isActive);
+        }
+      });
+
+      const setCard = (key, value, yoy, twoY) => {
+        const card = cards[key];
+        if (!card) return;
+        const metric = card.querySelector('[data-metric]');
+        const yoyEl = card.querySelector('[data-yoy]');
+        const yoyLabel = card.querySelector('[data-yoy-label]');
+        const twoYEl = card.querySelector('[data-twoy]');
+        const twoYLabel = card.querySelector('[data-twoy-label]');
+
+        if (metric) metric.textContent = value;
+        if (yoyEl) yoyEl.textContent = yoy ?? '—';
+        if (twoYEl) twoYEl.textContent = twoY ?? '—';
+        if (yoyLabel && prev) yoyLabel.textContent = yoyLabel.textContent.replace(/· к \d{4}/, `· к ${prev.year}`);
+        if (twoYLabel) twoYLabel.textContent = twoYLabel.textContent.replace(/· к \d{4}/, `· к ${first.year}`);
+
+        const dots = card.querySelectorAll('[data-dots] span');
+        dots.forEach((d, di) => {
+          const isActive = di === i;
+          const isDark = key === 'profit';
+          d.className = `block h-[6px] ${isActive ? `w-8 ${isDark ? 'bg-white' : 'bg-[#16243E]'}` : 'w-3 bg-[#D5DEE3]'}`;
+        });
+      };
+
+      const revYoy = prev ? fmt(pct(cur.revenue, prev.revenue), '%') : null;
+      const profYoy = prev ? fmt(pct(cur.profit, prev.profit), '%') : null;
+      const marYoy = prev ? fmt(cur.margin - prev.margin, ppSuffix) : null;
+
+      const showTwoY = i >= 2;
+      const revTwoY = showTwoY ? fmt(pct(cur.revenue, first.revenue), '%') : null;
+      const profTwoY = showTwoY ? fmt(pct(cur.profit, first.profit), '%') : null;
+      const marTwoY = showTwoY ? fmt(cur.margin - first.margin, ppSuffix) : null;
+
+      setCard('revenue', `$${cur.revenue}K`, revYoy, revTwoY);
+      setCard('profit', `$${cur.profit}K`, profYoy, profTwoY);
+      setCard('margin', `${cur.margin}%`, marYoy, marTwoY);
+    }
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => update(i));
+    });
+  }
+</script>

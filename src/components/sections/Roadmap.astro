@@ -1,54 +1,189 @@
 ---
-import Eyebrow from '@/components/ui/Eyebrow.astro';
-import Section from '@/components/ui/Section.astro';
-import RoadmapShowcase from '@/components/sections/RoadmapShowcase';
 import { getDict, type Locale } from '@/i18n';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const t = getDict(locale).roadmap;
+const activeIndex = 0;
+const active = t.cards[activeIndex];
 ---
 
-<Section id="roadmap" variant="dark">
-  <div class="reveal">
-    <Eyebrow text={t.eyebrow} variant="dark" />
-    <h2 class="h1-section text-ink-white mt-4 max-w-4xl">{t.title}</h2>
-  </div>
-
-  <div class="mt-10 md:mt-14 reveal">
-    <RoadmapShowcase client:visible items={t.cards} />
-  </div>
-
-  <!-- Growth bar -->
-  <div class="mt-12 md:mt-16 reveal">
-    <div class="eyebrow text-gold-soft mb-5">{t.growthBar.label}</div>
-
-    <div class="grid grid-cols-[auto_1fr_auto] items-center gap-4 md:gap-8">
-      <div class="text-right">
-        <div class="serif text-2xl md:text-4xl text-ink-white tabular leading-none" data-count-up>{t.growthBar.from}</div>
-        <div class="eyebrow text-ink-mutedDk mt-2 hidden md:block">{t.growthBar.fromLabel}</div>
+<section id="roadmap" class="bg-bg-dark text-white py-12 md:py-16 rounded-3xl">
+  <div class="container-content">
+    <div class="max-w-3xl mx-auto flex flex-col gap-10" data-roadmap>
+      <div class="reveal flex flex-col gap-3 items-start">
+        <div class="inline-flex items-center bg-white text-[#16243E] px-3 py-1.5 rounded-3xl text-[11px] font-bold uppercase tracking-[2px]">
+          {t.eyebrow}
+        </div>
+        <h2 class="serif text-[#F5F1E8] text-2xl sm:text-3xl md:text-4xl leading-[1.15] tracking-[-0.01em]">
+          {t.title}
+        </h2>
       </div>
 
-      <div class="relative h-12 md:h-16 bg-card-dark border border-line-dark/60 overflow-hidden">
-        <div
-          class="absolute left-0 top-0 bottom-0 bg-gold growth-bar-fill"
-          style="--bar-pct: 63.4%"
-        ></div>
-        <div
-          class="absolute right-0 top-0 bottom-0 left-[63.4%] border-l border-dashed border-gold/60 flex items-center justify-center"
-        >
-          <span class="eyebrow text-gold-soft px-3">{t.growthBar.upsideLabel}</span>
+      <!-- Showcase: 2-panel -->
+      <div class="reveal grid lg:grid-cols-[1.4fr_1fr] gap-px bg-bg-dark rounded-3xl overflow-hidden">
+        <!-- LEFT featured panel -->
+        <div data-rm-left class="bg-[#D5DEE3] p-7 md:p-10 lg:p-12 min-h-[420px] flex flex-col justify-between gap-6">
+          <div class="flex flex-col gap-4">
+            <div class="flex items-baseline gap-4">
+              <span data-rm-letter class="serif text-5xl md:text-6xl text-[#16243E] leading-none">{active.letter}</span>
+              <span data-rm-index class="text-[11px] font-bold uppercase tracking-[2px] text-[#16243E]">
+                {String(activeIndex + 1).padStart(2, '0')} / {String(t.cards.length).padStart(2, '0')}
+              </span>
+            </div>
+            <h3 data-rm-title class="serif text-2xl md:text-3xl lg:text-4xl text-[#222] leading-tight">
+              {active.title}
+            </h3>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <div class="h-px bg-[#525252]/60 w-full"></div>
+            <p data-rm-body class="text-[14px] md:text-[15px] text-[#525252] leading-[24px] max-w-md">
+              {active.body}
+            </p>
+            <div data-rm-metric class="inline-flex self-start items-center bg-[#E6A25B] text-white px-4 py-2 rounded-3xl text-sm md:text-base font-bold tracking-[0.05em]">
+              {active.metric}
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1">
+            {t.cards.map((_, i) => (
+              <span
+                data-rm-dot={i}
+                class={`block h-[2px] transition-all ${i === activeIndex ? 'w-10 bg-[#16243E]' : 'w-5 bg-white'}`}
+              ></span>
+            ))}
+          </div>
+        </div>
+
+        <!-- RIGHT 4-row list -->
+        <div class="flex flex-col gap-px bg-bg-dark">
+          {t.cards.map((card, i) => {
+            const isActive = i === activeIndex;
+            return (
+              <button
+                type="button"
+                data-rm-card={i}
+                class={`flex flex-col gap-2 items-start px-6 py-5 md:px-8 md:py-6 text-left min-h-[110px] transition-colors ${isActive ? 'bg-white/10' : 'bg-white hover:bg-white/90'}`}
+                aria-pressed={isActive ? 'true' : 'false'}
+              >
+                <div class="flex items-baseline gap-3 w-full">
+                  <span class={`serif text-3xl leading-none shrink-0 ${isActive ? 'text-white' : 'text-[#16243E]'}`}>{card.letter}</span>
+                  <span class={`text-[15px] md:text-base leading-tight ${isActive ? 'text-white' : 'text-[#222]'}`}>{card.title}</span>
+                </div>
+                <div class={`text-[12px] leading-4 ${isActive ? 'text-white/70' : 'text-[#525252]'}`}>{card.metric}</div>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div>
-        <div class="serif text-2xl md:text-4xl text-gold tabular leading-none" data-count-up>{t.growthBar.to}</div>
-        <div class="eyebrow text-ink-mutedDk mt-2 hidden md:block text-right">EBITDA</div>
+      <!-- Growth bar -->
+      <div class="reveal flex flex-col gap-4 pt-2">
+        <div class="text-[11px] font-bold uppercase tracking-[2px] text-white">{t.growthBar.label}</div>
+
+        <div class="grid grid-cols-[auto_1fr_auto] items-center gap-4 md:gap-6">
+          <div class="text-right flex flex-col gap-1.5">
+            <div class="serif text-2xl md:text-3xl text-white tabular leading-none">{t.growthBar.from}</div>
+            <div class="text-[10px] font-bold uppercase tracking-[1.5px] text-white/70">{t.growthBar.fromLabel}</div>
+          </div>
+
+          <div class="relative h-14 md:h-16 bg-[#162536] rounded-3xl overflow-hidden">
+            <div class="absolute top-px bottom-px left-px bg-[#E6A25B]" style="right: 36.5%;"></div>
+            <div class="absolute top-px bottom-px right-px left-[63.5%] border border-white rounded-r-3xl flex items-center justify-center">
+              <span class="text-[11px] md:text-xs font-bold uppercase tracking-[2px] text-white whitespace-nowrap px-2">
+                {t.growthBar.upsideLabel}
+              </span>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <div class="serif text-2xl md:text-3xl text-white tabular leading-none">{t.growthBar.to}</div>
+            <div class="text-[10px] font-bold uppercase tracking-[1.5px] text-white/70 text-right">EBITDA</div>
+          </div>
+        </div>
+
+        <p class="text-[12px] md:text-[13px] text-white/70 text-center max-w-2xl mx-auto leading-[1.5] mt-1">
+          {t.growthBar.caption}
+        </p>
       </div>
     </div>
-
-    <p class="text-sm md:text-[15px] text-ink-mutedDk text-center mt-6 max-w-3xl mx-auto leading-relaxed">
-      {t.growthBar.caption}
-    </p>
   </div>
-</Section>
+</section>
+
+<script type="application/json" data-roadmap-data set:html={JSON.stringify(t.cards)} is:inline />
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-roadmap]');
+  const dataEl = document.querySelector<HTMLElement>('[data-roadmap-data]');
+  if (root && dataEl) {
+    const items = JSON.parse(dataEl.textContent || '[]') as Array<{
+      letter: string;
+      title: string;
+      body: string;
+      metric: string;
+    }>;
+
+    const letterEl = root.querySelector<HTMLElement>('[data-rm-letter]');
+    const indexEl = root.querySelector<HTMLElement>('[data-rm-index]');
+    const titleEl = root.querySelector<HTMLElement>('[data-rm-title]');
+    const bodyEl = root.querySelector<HTMLElement>('[data-rm-body]');
+    const metricEl = root.querySelector<HTMLElement>('[data-rm-metric]');
+    const cards = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-rm-card]'));
+    const dots = Array.from(root.querySelectorAll<HTMLElement>('[data-rm-dot]'));
+
+    let active = 0;
+    let paused = false;
+
+    function setActive(i: number) {
+      if (i === active || !items[i]) return;
+      active = i;
+      const it = items[i];
+
+      if (letterEl) letterEl.textContent = it.letter;
+      if (indexEl) indexEl.textContent = `${String(i + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`;
+      if (titleEl) titleEl.textContent = it.title;
+      if (bodyEl) bodyEl.textContent = it.body;
+      if (metricEl) metricEl.textContent = it.metric;
+
+      cards.forEach((card, idx) => {
+        const isActive = idx === i;
+        card.setAttribute('aria-pressed', String(isActive));
+        card.className = `flex flex-col gap-2 items-start px-6 py-5 md:px-8 md:py-6 text-left min-h-[110px] transition-colors ${isActive ? 'bg-white/10' : 'bg-white hover:bg-white/90'}`;
+        const letter = card.querySelector('span:first-of-type');
+        const title = card.querySelector('span:nth-of-type(2)');
+        const metric = card.querySelector('div:last-of-type');
+        if (letter) {
+          letter.className = `serif text-3xl leading-none shrink-0 ${isActive ? 'text-white' : 'text-[#16243E]'}`;
+        }
+        if (title) {
+          title.className = `text-[15px] md:text-base leading-tight ${isActive ? 'text-white' : 'text-[#222]'}`;
+        }
+        if (metric) {
+          metric.className = `text-[12px] leading-4 ${isActive ? 'text-white/70' : 'text-[#525252]'}`;
+        }
+      });
+
+      dots.forEach((dot, idx) => {
+        const isActive = idx === i;
+        dot.className = `block h-[2px] transition-all ${isActive ? 'w-10 bg-[#16243E]' : 'w-5 bg-white'}`;
+      });
+    }
+
+    cards.forEach((card, i) => {
+      card.addEventListener('click', () => setActive(i));
+    });
+    dots.forEach((dot, i) => {
+      dot.style.cursor = 'pointer';
+      dot.addEventListener('click', () => setActive(i));
+    });
+
+    root.addEventListener('mouseenter', () => { paused = true; });
+    root.addEventListener('mouseleave', () => { paused = false; });
+
+    setInterval(() => {
+      if (paused) return;
+      setActive((active + 1) % items.length);
+    }, 6500);
+  }
+</script>

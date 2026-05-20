@@ -1,6 +1,4 @@
 ---
-import Eyebrow from '@/components/ui/Eyebrow.astro';
-import Section from '@/components/ui/Section.astro';
 import NdaRequestForm from '@/components/form/NdaRequestForm';
 import { getDict, type Locale } from '@/i18n';
 import { contact } from '@/config';
@@ -11,28 +9,31 @@ const t = getDict(locale).cta;
 const f = getDict(locale).form;
 ---
 
-<Section id="nda" variant="dark">
-  <div class="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-20 items-start">
-    <div class="reveal">
-      <Eyebrow text={t.eyebrow} variant="dark" />
-      <h2 class="display-hero text-ink-white mt-5 leading-tight">
-        <span class="block">{t.titleLine1}</span>
-        <span class="block text-gold">{t.titleLine2}</span>
-      </h2>
-      <div class="h-px w-24 bg-gold mt-8 mb-8"></div>
-      <p class="text-base md:text-lg text-ink-mutedDk leading-relaxed max-w-md">
-        {t.body}
-      </p>
-    </div>
+<section id="nda" class="bg-bg-dark py-12 md:py-16">
+  <div class="container-content">
+    <div class="max-w-3xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-10 items-start">
+      <div class="reveal flex flex-col gap-4">
+        <div class="text-[11px] font-bold uppercase tracking-[2px] text-white">
+          {t.eyebrow}
+        </div>
+        <h2 class="serif leading-[1.05]">
+          <span class="block text-[#F5F1E8] text-4xl sm:text-5xl md:text-6xl tracking-[-0.02em]">{t.titleLine1}</span>
+          <span class="block text-[#E6A25B] text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] mt-1">{t.titleLine2}</span>
+        </h2>
+        <p class="text-[14px] md:text-[15px] text-white/70 leading-[1.6] max-w-md mt-3">
+          {t.body}
+        </p>
+      </div>
 
-    <div class="reveal">
-      <NdaRequestForm
-        client:load
-        labels={f}
-        locale={locale}
-        whatsappUrl={contact.whatsapp}
-        telegramUrl={contact.telegram}
-      />
+      <div class="reveal">
+        <NdaRequestForm
+          client:load
+          labels={f}
+          locale={locale}
+          whatsappUrl={contact.whatsapp}
+          telegramUrl={contact.telegram}
+        />
+      </div>
     </div>
   </div>
-</Section>
+</section>

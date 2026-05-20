@@ -1,27 +1,140 @@
 ---
-import Eyebrow from '@/components/ui/Eyebrow.astro';
-import Section from '@/components/ui/Section.astro';
-import ProcessTimeline from '@/components/sections/ProcessTimeline';
 import { getDict, type Locale } from '@/i18n';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const t = getDict(locale).process;
+const activeIndex = 0;
 ---
 
-<Section id="process" variant="light">
-  <div class="reveal">
-    <Eyebrow text={t.eyebrow} />
-    <h2 class="h1-section mt-4 max-w-3xl">{t.title}</h2>
-  </div>
+<section id="process" class="bg-white py-12 md:py-16">
+  <div class="container-content">
+    <div class="max-w-3xl mx-auto flex flex-col gap-10" data-process>
+      <div class="reveal flex flex-col gap-3 items-start">
+        <div class="inline-flex items-center bg-bg-dark text-white px-3 py-1.5 rounded-3xl text-[11px] font-bold uppercase tracking-[2px]">
+          {t.eyebrow}
+        </div>
+        <h2 class="serif text-[#222] text-2xl sm:text-3xl md:text-4xl leading-[1.1] tracking-[-0.01em]">
+          {t.title}
+        </h2>
+      </div>
 
-  <div class="mt-12 md:mt-16 reveal">
-    <ProcessTimeline client:visible steps={t.steps} />
-  </div>
+      <!-- Horizontal timeline -->
+      <div class="reveal relative">
+        <!-- Connecting line -->
+        <div class="absolute left-0 right-0 top-[24px] md:top-[28px] h-px bg-[#B89651]/25"></div>
+        <div data-progress-line class="absolute left-0 top-[24px] md:top-[28px] h-px bg-[#16243E] transition-all" style="width: 7.14%;"></div>
 
-  <!-- Bottom box -->
-  <div class="mt-12 md:mt-16 reveal bg-tan-card/60 border border-line-dim p-6 md:p-9">
-    <div class="eyebrow text-gold-deep mb-4">{t.bottomLabel}</div>
-    <p class="text-sm md:text-base text-ink leading-relaxed">{t.bottomBody}</p>
+        <div class="relative grid grid-cols-7 gap-1">
+          {t.steps.map((step, i) => {
+            const isActive = i === activeIndex;
+            return (
+              <button
+                type="button"
+                data-step={i}
+                aria-label={`${i + 1} · ${step.title}`}
+                aria-pressed={isActive ? 'true' : 'false'}
+                class="flex flex-col items-center gap-3 group"
+              >
+                <span data-step-circle class={`flex items-center justify-center rounded-full transition-all serif ${
+                  isActive
+                    ? 'w-12 h-12 md:w-14 md:h-14 bg-bg-dark text-white text-xl md:text-2xl ring-[6px] ring-[#D5DEE3]'
+                    : 'w-10 h-10 md:w-12 md:h-12 bg-[#D5DEE3] text-[#16243E] text-sm md:text-base border-2 border-[#16243E]'
+                }`}>
+                  {i + 1}
+                </span>
+                <span class="text-[9px] md:text-[11px] font-bold uppercase tracking-[1.5px] text-[#525252] text-center whitespace-nowrap leading-tight">
+                  {step.title}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Current step card -->
+      <div class="reveal bg-[#D5DEE3] rounded-3xl p-6 md:p-9 grid md:grid-cols-[80px_1fr] gap-6 md:gap-10 items-start">
+        <div class="flex flex-col">
+          <div data-step-counter class="text-[11px] font-bold uppercase tracking-[2px] text-[#222] leading-[18px]">
+            {String(activeIndex + 1).padStart(2, '0')} / {String(t.steps.length).padStart(2, '0')}
+          </div>
+          <div data-step-num class="serif text-5xl md:text-6xl lg:text-[72px] text-[#16243E] leading-none pt-3 tabular">
+            {String(activeIndex + 1).padStart(2, '0')}
+          </div>
+        </div>
+        <div class="flex flex-col gap-3">
+          <div data-step-code class="text-[11px] font-bold uppercase tracking-[2px] text-[#222] leading-[18px]">
+            {t.steps[activeIndex].code}
+          </div>
+          <div data-step-body class="serif text-2xl md:text-3xl text-[#222] leading-tight">
+            {t.steps[activeIndex].body}
+          </div>
+        </div>
+      </div>
+
+      <!-- After NDA info -->
+      <div class="reveal bg-[#ededed] rounded-3xl p-6 md:p-9 flex flex-col gap-3">
+        <div class="text-[11px] font-bold uppercase tracking-[2px] text-[#222]">{t.bottomLabel}</div>
+        <p class="text-[14px] md:text-[15px] text-[#525252] leading-[1.5]">{t.bottomBody}</p>
+      </div>
+    </div>
   </div>
-</Section>
+</section>
+
+<script type="application/json" data-process-data set:html={JSON.stringify(t.steps)} is:inline />
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-process]');
+  const dataEl = document.querySelector<HTMLElement>('[data-process-data]');
+  if (root && dataEl) {
+    const steps = JSON.parse(dataEl.textContent || '[]') as Array<{
+      code: string;
+      title: string;
+      body: string;
+    }>;
+
+    const counterEl = root.querySelector<HTMLElement>('[data-step-counter]');
+    const numEl = root.querySelector<HTMLElement>('[data-step-num]');
+    const codeEl = root.querySelector<HTMLElement>('[data-step-code]');
+    const bodyEl = root.querySelector<HTMLElement>('[data-step-body]');
+    const progressLine = root.querySelector<HTMLElement>('[data-progress-line]');
+    const stepButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-step]'));
+    const circles = stepButtons.map((btn) => btn.querySelector<HTMLElement>('[data-step-circle]'));
+
+    let active = 0;
+
+    function setActive(i: number) {
+      if (i === active || !steps[i]) return;
+      active = i;
+      const step = steps[i];
+
+      if (counterEl) {
+        counterEl.textContent = `${String(i + 1).padStart(2, '0')} / ${String(steps.length).padStart(2, '0')}`;
+      }
+      if (numEl) numEl.textContent = String(i + 1).padStart(2, '0');
+      if (codeEl) codeEl.textContent = step.code;
+      if (bodyEl) bodyEl.textContent = step.body;
+      if (progressLine) {
+        const pct = ((i + 1) / steps.length) * 100;
+        progressLine.style.width = `${pct}%`;
+      }
+
+      stepButtons.forEach((btn, idx) => {
+        const isActive = idx === i;
+        btn.setAttribute('aria-pressed', String(isActive));
+        const circle = circles[idx];
+        if (circle) {
+          circle.className = `flex items-center justify-center rounded-full transition-all serif ${
+            isActive
+              ? 'w-12 h-12 md:w-14 md:h-14 bg-bg-dark text-white text-xl md:text-2xl ring-[6px] ring-[#D5DEE3]'
+              : 'w-10 h-10 md:w-12 md:h-12 bg-[#D5DEE3] text-[#16243E] text-sm md:text-base border-2 border-[#16243E]'
+          }`;
+        }
+      });
+    }
+
+    stepButtons.forEach((btn, i) => {
+      btn.addEventListener('click', () => setActive(i));
+    });
+  }
+</script>

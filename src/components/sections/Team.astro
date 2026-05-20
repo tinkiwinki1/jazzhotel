@@ -1,6 +1,4 @@
 ---
-import Eyebrow from '@/components/ui/Eyebrow.astro';
-import Section from '@/components/ui/Section.astro';
 import { getDict, type Locale } from '@/i18n';
 
 interface Props { locale: Locale }
@@ -8,63 +6,74 @@ const { locale } = Astro.props;
 const t = getDict(locale).team;
 ---
 
-<Section id="team" variant="dark">
-  <div class="reveal">
-    <Eyebrow text={t.eyebrow} variant="dark" />
-    <h2 class="h1-section text-ink-white mt-4 max-w-3xl">{t.title}</h2>
-  </div>
+<section id="team" class="bg-bg-dark text-white py-12 md:py-16 rounded-3xl">
+  <div class="container-content">
+    <div class="max-w-3xl mx-auto flex flex-col gap-10">
+      <div class="reveal flex flex-col gap-3 items-start">
+        <div class="inline-flex items-center bg-white text-[#222] px-3 py-1.5 rounded-3xl text-[11px] font-bold uppercase tracking-[2px]">
+          {t.eyebrow}
+        </div>
+        <h2 class="serif text-[#F5F1E8] text-2xl sm:text-3xl md:text-4xl leading-[1.15] tracking-[-0.01em]">
+          {t.title}
+        </h2>
+      </div>
 
-  <div class="grid lg:grid-cols-2 gap-px bg-line-dark/40 mt-12 md:mt-16 border border-line-dark/40">
-    <!-- Track record -->
-    <div class="bg-card-dark p-7 md:p-10 reveal flex flex-col gap-6">
-      <div class="eyebrow text-gold-soft">{t.trackRecordLabel}</div>
-      <ul class="flex flex-col divide-y divide-line-dark">
-        {t.trackRecord.map((row, i) => (
-          <li class="grid grid-cols-[auto_1fr] gap-5 md:gap-7 items-baseline py-4">
-            <span
-              class="serif text-2xl md:text-3xl text-gold tabular leading-none whitespace-nowrap min-w-[90px]"
-              data-count-up
-              data-count-up-delay={String(i * 120)}
-            >
-              {row.metric}
-            </span>
-            <span class="text-sm md:text-[15px] text-ink-mutedDk leading-relaxed">{row.label}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+      <!-- 2-panel grid -->
+      <div class="reveal grid lg:grid-cols-2 gap-px bg-bg-dark rounded-3xl overflow-hidden items-stretch">
+        <!-- LEFT — track record (light blue) -->
+        <div class="bg-[#D5DEE3] p-6 md:p-8 flex flex-col gap-5">
+          <div class="text-[11px] font-bold uppercase tracking-[2px] text-[#222]">{t.trackRecordLabel}</div>
+          <ul class="flex flex-col">
+            {t.trackRecord.map((row, i) => (
+              <li class={`flex gap-4 md:gap-5 items-center py-3 ${i < t.trackRecord.length - 1 ? 'border-b border-[#525252]/60' : ''}`}>
+                <span
+                  class="serif text-2xl md:text-3xl text-[#16243E] tabular leading-9 text-center w-[80px] md:w-[90px] shrink-0"
+                  data-count-up
+                  data-count-up-delay={String(i * 100)}
+                >
+                  {row.metric}
+                </span>
+                <span class="text-[14px] text-[#525252] leading-[1.5] flex-1">{row.label}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-    <!-- Fee structure -->
-    <div class="bg-card-dark p-7 md:p-10 reveal flex flex-col gap-6">
-      <div class="eyebrow text-gold-soft">{t.feeStructureLabel}</div>
-      <div class="flex items-baseline gap-4">
-        <span class="serif text-7xl md:text-8xl text-gold tabular leading-none" data-count-up>{t.feeValue}</span>
-        <span class="text-sm md:text-base text-ink-mutedDk">{t.feeUnit}</span>
+        <!-- RIGHT — fee structure (white) -->
+        <div class="bg-white p-6 md:p-8 flex flex-col gap-5 justify-between">
+          <div class="flex flex-col gap-5">
+            <div class="text-[11px] font-bold uppercase tracking-[2px] text-[#222]">{t.feeStructureLabel}</div>
+            <div class="flex items-baseline gap-4 flex-wrap">
+              <span class="serif text-[64px] md:text-[80px] lg:text-[96px] text-[#E6A25B] leading-none tabular" data-count-up>{t.feeValue}</span>
+              <span class="text-[14px] md:text-[15px] text-[#222] leading-6">{t.feeUnit}</span>
+            </div>
+            <ul class="flex flex-col gap-3">
+              {t.feeBullets.map((b) => (
+                <li class="flex gap-2 items-start">
+                  <span class="text-[#E6A25B] text-[18px] leading-none shrink-0 mt-0.5">◆</span>
+                  <span class="text-[14px] md:text-[15px] text-[#222] leading-[1.5] flex-1">{b}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="inline-flex self-start items-center bg-bg-dark text-white px-4 py-2 rounded-3xl text-sm font-bold tracking-[0.05em]">
+            {t.feePill}
+          </div>
+        </div>
       </div>
-      <ul class="flex flex-col gap-3">
-        {t.feeBullets.map((b) => (
-          <li class="grid grid-cols-[auto_1fr] gap-3 items-start text-sm md:text-[15px] text-ink-mutedDk">
-            <span class="text-gold serif text-lg leading-tight">✓</span>
-            <span class="leading-relaxed">{b}</span>
-          </li>
-        ))}
-      </ul>
-      <div class="mt-2 inline-flex self-start px-4 py-2 bg-gold text-bg-dark text-xs md:text-sm font-semibold tracking-wider">
-        {t.feePill}
+
+      <!-- Benchmark comparison strip -->
+      <div class="reveal flex flex-col gap-3">
+        <div class="text-[11px] font-bold uppercase tracking-[2px] text-white">{t.benchmarkLabel}</div>
+        <div class="grid md:grid-cols-2 gap-px bg-white border border-white rounded-3xl overflow-hidden">
+          <div class="bg-bg-dark p-5 md:p-7 flex items-center">
+            <p class="text-[14px] md:text-[15px] text-white leading-[1.5]">{t.benchmarkMarket}</p>
+          </div>
+          <div class="bg-bg-dark p-5 md:p-7 flex items-center">
+            <p class="text-[14px] md:text-[15px] text-white leading-[1.5]">{t.benchmarkOffer}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- Benchmark strip -->
-  <div class="mt-12 reveal">
-    <div class="eyebrow text-gold-soft mb-4">{t.benchmarkLabel}</div>
-    <div class="grid md:grid-cols-2 gap-px bg-line-dark/40 border border-line-dark/40">
-      <div class="bg-card-dark p-6 md:p-7 flex items-center">
-        <div class="text-sm md:text-[15px] text-ink-mutedDk leading-relaxed">{t.benchmarkMarket}</div>
-      </div>
-      <div class="bg-card-dark p-6 md:p-7 border-l-2 border-gold flex items-center">
-        <div class="text-sm md:text-[15px] text-ink-white leading-relaxed">{t.benchmarkOffer}</div>
-      </div>
-    </div>
-  </div>
-</Section>
+</section>
