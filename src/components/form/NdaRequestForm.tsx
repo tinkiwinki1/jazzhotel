@@ -77,6 +77,9 @@ export default function NdaRequestForm({ labels, locale, whatsappUrl, telegramUr
         if (typeof window !== 'undefined' && (window as any).plausible) {
           (window as any).plausible('nda_form_submit_success');
         }
+        if (typeof window !== 'undefined' && (window as any).fbq) {
+          (window as any).fbq('track', 'CompleteRegistration');
+        }
       } else {
         setStatus('error');
       }
