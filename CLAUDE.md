@@ -41,6 +41,8 @@ Env vars (`.env` locally; Netlify dashboard in prod — intentionally not in `ne
 - `SELLER_EMAIL`, `FROM_EMAIL` — defaults fall back to `info@aurahomes.ge` / `nda@aurahomes.ge`
 - `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` — both required to enable Telegram notifications
 - `PLAUSIBLE_DOMAIN` — optional analytics
+- `FB_CONVERSIONS_API_TOKEN` — optional; enables the server-side Meta `Lead` event (Conversions API) from the NDA API route. Without it, only the browser Pixel fires.
+- `FB_PIXEL_ID` — optional override for the CAPI pixel id; defaults to the pixel hardcoded in `Base.astro` (`1716927566157782`).
 
 See `SETUP_NOTIFICATIONS.md` for the Telegram bot setup walkthrough.
 

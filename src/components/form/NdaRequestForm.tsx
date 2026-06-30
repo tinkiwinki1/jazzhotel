@@ -65,10 +65,17 @@ export default function NdaRequestForm({ labels, locale, whatsappUrl, telegramUr
           utm = JSON.parse(localStorage.getItem('utm') || '{}');
         } catch {}
       }
+      // Shared id so the browser Pixel and the server Conversions API
+      // collapse into a single Lead event (Meta dedupes on event_id).
+      const eventId =
+        typeof crypto !== 'undefined' && 'randomUUID' in crypto
+          ? crypto.randomUUID()
+          : `lead_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+
       const res = await fetch('/api/nda-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...values, utm, locale }),
+        body: JSON.stringify({ ...values, utm, locale, eventId }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.ok) {
@@ -78,7 +85,7 @@ export default function NdaRequestForm({ labels, locale, whatsappUrl, telegramUr
           (window as any).plausible('nda_form_submit_success');
         }
         if (typeof window !== 'undefined' && (window as any).fbq) {
-          (window as any).fbq('track', 'CompleteRegistration');
+          (window as any).fbq('track', 'Lead', {}, { eventID: eventId });
         }
       } else {
         setStatus('error');
