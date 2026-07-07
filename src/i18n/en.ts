@@ -4,7 +4,7 @@ export const en: Dict = {
   meta: {
     title: 'Jazz Hotel · 4★ Boutique Hotel',
     description:
-      'Confidential investment opportunity. 44-key 4★ boutique hotel. 12.7% implied cap rate, 55% operating margin.',
+      'Confidential investment opportunity. 44-key 4★ boutique hotel. 13.5% implied cap rate, 55% operating margin.',
     ogImage: '/images/og-cover.jpg',
     locale: 'en',
     altLocale: 'ru',
@@ -23,7 +23,7 @@ export const en: Dict = {
   hero: {
     eyebrow: 'CONFIDENTIAL INVESTMENT OPPORTUNITY',
     titleLarge: 'Jazz Hotel',
-    capRate: '12.7%',
+    capRate: '13.5%',
     capRateLabel: 'IMPLIED CAP RATE',
     capRateNote: 'on 2025 operating profit',
     cta: 'Get the offer',
@@ -39,7 +39,7 @@ export const en: Dict = {
     paragraph: [
       { text: '44', highlight: true },
       { text: ' freehold keys, ' },
-      { text: '12.7%', highlight: true },
+      { text: '13.5%', highlight: true },
       { text: ' operating margin, ' },
       { text: '68%', highlight: true },
       { text: ' revenue growth over two years, and a clear pipeline of brand and F&B upside.' },
@@ -48,7 +48,7 @@ export const en: Dict = {
       { value: '44', label: 'KEYS' },
       { value: '2,183', label: '(m²) GFA' },
       { value: '2019', label: 'OPENED' },
-      { value: '$3.5', label: '(M) ASKING' },
+      { value: '$3.3', label: '(M) ASKING' },
     ],
   },
   highlights: {
@@ -66,9 +66,9 @@ export const en: Dict = {
         body: 'Operating margin in 2025, materially above the 30–40% benchmark for 4★ urban hotels. A well-run, cash-generative hotel.',
       },
       {
-        metric: '12.7%',
+        metric: '13.5%',
         caption: 'ATTRACTIVE ENTRY YIELD',
-        body: 'Implied cap rate on $3.5M asking price, vs 7–10% for comparable urban 4★ assets in regional capitals.',
+        body: 'Implied cap rate on $3.3M asking price, vs 7–10% for comparable urban 4★ assets in regional capitals.',
       },
       {
         metric: '2025',
@@ -245,7 +245,7 @@ export const en: Dict = {
       profitValue: '$444K',
       profitLabel: '2025 OPERATING PROFIT',
       profitNote: '+124% vs 2023',
-      capValue: '12.7%',
+      capValue: '13.5%',
       capLabel: 'IMPLIED CAP RATE @ ASKING',
       capNote: 'vs 7–10% benchmark',
     },
@@ -259,8 +259,8 @@ export const en: Dict = {
       twoYearLabel: '2y',
     },
     punchline: {
-      lead: '$444K of operating profit at a $3.5M ask →',
-      cap: '12.7%',
+      lead: '$444K of operating profit at a $3.3M ask →',
+      cap: '13.5%',
       headline: 'IMPLIED CAP RATE',
       tail: 'vs 7–10% benchmark for 4★ urban hotels',
     },
@@ -307,12 +307,12 @@ export const en: Dict = {
     eyebrow: '07 · TRANSACTION',
     title: 'Parameters & deliverables',
     priceLabel: 'ASKING PRICE',
-    price: '$3.5M',
+    price: '$3.3M',
     metrics: [
-      { label: 'Implied cap rate', value: '12.7%' },
-      { label: 'EV / 2025 op. profit', value: '7.9x' },
-      { label: 'Per key', value: '$79.5K' },
-      { label: 'Per built m²', value: '$1,604' },
+      { label: 'Implied cap rate', value: '13.5%' },
+      { label: 'EV / 2025 op. profit', value: '7.4x' },
+      { label: 'Per key', value: '$75K' },
+      { label: 'Per built m²', value: '$1,512' },
     ],
     includedLabel: "WHAT'S INCLUDED IN THE TRANSACTION",
     included: [

@@ -1,7 +1,7 @@
 export const ru = {
   meta: {
     title: 'Jazz Hotel · 4★ Boutique Hotel',
-    description: 'Конфиденциальное инвестиционное предложение. 4★ бутик-отель на 44 номера. 12,7% cap rate, операционная маржа 55%.',
+    description: 'Конфиденциальное инвестиционное предложение. 4★ бутик-отель на 44 номера. 13,5% cap rate, операционная маржа 55%.',
     ogImage: '/images/og-cover.jpg',
     locale: 'ru',
     altLocale: 'en',
@@ -20,7 +20,7 @@ export const ru = {
   hero: {
     eyebrow: 'КОНФИДЕНЦИАЛЬНОЕ ПРЕДЛОЖЕНИЕ',
     titleLarge: 'Jazz Hotel',
-    capRate: '12.7%',
+    capRate: '13.5%',
     capRateLabel: 'ПОДРАЗУМЕВАЕМЫЙ CAP RATE',
     capRateNote: 'на операционную прибыль 2025 г.',
     cta: 'Получить оффер',
@@ -36,7 +36,7 @@ export const ru = {
     paragraph: [
       { text: '44', highlight: true },
       { text: ' номера в полной собственности, операционная маржа ' },
-      { text: '12.7%', highlight: true },
+      { text: '13.5%', highlight: true },
       { text: ', рост выручки ' },
       { text: '68%', highlight: true },
       { text: ' за два года и понятный план roll-out апсайдов по бренду и F&B.' },
@@ -45,7 +45,7 @@ export const ru = {
       { value: '44', label: 'НОМЕРА' },
       { value: '2 183', label: '(м²) ОБЩАЯ ПЛОЩАДЬ' },
       { value: '2019', label: 'ОТКРЫТИЕ' },
-      { value: '$3,5', label: '(млн) ЦЕНА ПРОДАЖИ' },
+      { value: '$3,3', label: '(млн) ЦЕНА ПРОДАЖИ' },
     ],
   },
   highlights: {
@@ -63,9 +63,9 @@ export const ru = {
         body: 'Операционная маржа в 2025 г. — существенно выше отраслевого бенчмарка 30–40% для городских 4★. Хорошо настроенный и денежногенерирующий отель.',
       },
       {
-        metric: '12,7%',
+        metric: '13,5%',
         caption: 'ВЫСОКАЯ ВХОДНАЯ ДОХОДНОСТЬ',
-        body: 'Подразумеваемый cap rate на цене $3,5 млн против 7–10% по сопоставимым городским активам 4★ в столицах региона.',
+        body: 'Подразумеваемый cap rate на цене $3,3 млн против 7–10% по сопоставимым городским активам 4★ в столицах региона.',
       },
       {
         metric: '2025',
@@ -242,7 +242,7 @@ export const ru = {
       profitValue: '$444K',
       profitLabel: 'ОПЕРАЦИОННАЯ ПРИБЫЛЬ 2025',
       profitNote: '+124% к 2023 г.',
-      capValue: '12.7%',
+      capValue: '13.5%',
       capLabel: 'CAP RATE НА ЦЕНУ ПРОДАЖИ',
       capNote: 'при бенчмарке 7–10%',
     },
@@ -256,8 +256,8 @@ export const ru = {
       twoYearLabel: '2 года',
     },
     punchline: {
-      lead: '$444K операционной прибыли при цене $3,5 млн →',
-      cap: '12,7%',
+      lead: '$444K операционной прибыли при цене $3,3 млн →',
+      cap: '13,5%',
       headline: 'ПОДРАЗУМЕВАЕМЫЙ CAP RATE',
       tail: 'против бенчмарка 7–10% по 4★ городским активам',
     },
@@ -305,12 +305,12 @@ export const ru = {
     eyebrow: '07 · СДЕЛКА',
     title: 'Параметры и предмет передачи',
     priceLabel: 'ЦЕНА ПРОДАЖИ',
-    price: '$3.5M',
+    price: '$3.3M',
     metrics: [
-      { label: 'Подразумеваемый cap rate', value: '12,7%' },
-      { label: 'EV / операционная прибыль 2025', value: '7,9x' },
-      { label: 'За номер', value: '$79,5 тыс.' },
-      { label: 'За м² здания', value: '$1 604' },
+      { label: 'Подразумеваемый cap rate', value: '13,5%' },
+      { label: 'EV / операционная прибыль 2025', value: '7,4x' },
+      { label: 'За номер', value: '$75 тыс.' },
+      { label: 'За м² здания', value: '$1 512' },
     ],
     includedLabel: 'ЧТО ВХОДИТ В СДЕЛКУ',
     included: [
