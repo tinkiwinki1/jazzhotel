@@ -1,0 +1,42 @@
+/* Overrides for react-phone-number-input to match the other form fields
+   (see the `inp` class in NdaRequestForm.tsx). */
+
+.PhoneInput {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #3a4a60;
+  padding-left: 14px;
+  transition: border-color 0.15s ease;
+}
+
+.PhoneInput:focus-within {
+  border-color: #e6a25b;
+}
+
+.PhoneInputInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 12px 16px 12px 10px;
+  font-size: 15px;
+  color: #222;
+}
+
+.PhoneInputInput::placeholder {
+  color: #525252;
+}
+
+.PhoneInputCountry {
+  margin-right: 0;
+}
+
+.PhoneInputCountryIcon {
+  box-shadow: none;
+  background: none;
+}
+
+.PhoneInputCountrySelectArrow {
+  color: #525252;
+  opacity: 1;
+  margin-left: 7px;
+}

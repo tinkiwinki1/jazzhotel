@@ -374,7 +374,7 @@ export const en: Dict = {
     name: 'Name',
     email: 'Email',
     phone: 'Phone',
-    phoneHint: 'International format with country code: +995…, +7…',
+    phoneHint: 'Pick the country — the code fills in automatically',
     consent:
       'I agree to the processing of my personal data in accordance with the Privacy Policy.',
     submit: 'Get the offer',
@@ -389,7 +389,7 @@ export const en: Dict = {
       emailRequired: 'Please enter your email',
       emailInvalid: 'Invalid email',
       phoneRequired: 'Please enter your phone',
-      phoneInvalid: 'Please check the number — it should start with a country code, e.g. +995 599 12 34 56',
+      phoneInvalid: 'Please check the number — it looks invalid or incomplete',
       consentRequired: 'Consent is required',
     },
     altLabel: 'or message us directly',

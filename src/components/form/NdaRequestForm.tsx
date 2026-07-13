@@ -1,5 +1,10 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import PhoneInputWithCountry from 'react-phone-number-input/react-hook-form';
+import { isValidPhoneNumber } from 'react-phone-number-input';
+import ruLabels from 'react-phone-number-input/locale/ru';
+import 'react-phone-number-input/style.css';
+import './phone-input.css';
 import { normalizePhone } from '@/lib/phone';
 
 interface Labels {
@@ -45,6 +50,7 @@ export default function NdaRequestForm({ labels, locale, whatsappUrl, telegramUr
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
     reset,
@@ -173,18 +179,22 @@ export default function NdaRequestForm({ labels, locale, whatsappUrl, telegramUr
 
         <div>
           <label className={lbl} htmlFor="phone">{labels.phone}</label>
-          <input
+          <PhoneInputWithCountry
             id="phone"
-            type="tel"
-            inputMode="tel"
-            autoComplete="tel"
-            placeholder="+995 5XX XXX XXX"
-            className={inp}
-            aria-invalid={!!errors.phone}
-            {...register('phone', {
+            name="phone"
+            control={control}
+            rules={{
               required: true,
-              validate: (v) => normalizePhone(v) !== null,
-            })}
+              validate: (v: string | undefined) => !!v && isValidPhoneNumber(v),
+            }}
+            defaultCountry="GE"
+            international
+            countryCallingCodeEditable={false}
+            addInternationalOption={false}
+            countryOptionsOrder={['GE', 'RU', 'KZ', 'AM', 'AZ', 'TR', 'AE', 'IL', '|', '...']}
+            labels={locale === 'ru' ? ruLabels : undefined}
+            autoComplete="tel"
+            aria-invalid={!!errors.phone}
           />
           {errors.phone ? (
             <span className={err}>
