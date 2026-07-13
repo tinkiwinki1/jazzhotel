@@ -1,12 +1,25 @@
 import type { APIRoute } from 'astro';
 import { z } from 'zod';
+import { normalizePhone } from '@/lib/phone';
 
 export const prerender = false;
 
 const Body = z.object({
   name: z.string().min(2).max(80),
   email: z.string().email(),
-  phone: z.string().min(5).max(40),
+  // Normalized to E.164 — rejects anything that isn't a dialable number.
+  phone: z
+    .string()
+    .min(5)
+    .max(40)
+    .transform((v, ctx) => {
+      const normalized = normalizePhone(v);
+      if (!normalized) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'invalid_phone' });
+        return z.NEVER;
+      }
+      return normalized;
+    }),
   consent: z.literal(true),
   companyWebsite: z.string().max(0).optional().or(z.literal('')),
   utm: z.record(z.string()).optional(),
@@ -183,9 +196,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const FB_PIXEL_ID = runtimeEnv.FB_PIXEL_ID || '1716927566157782';
   const FB_CAPI_TOKEN = runtimeEnv.FB_CONVERSIONS_API_TOKEN;
 
-  const phoneClean = data.phone.replace(/\s/g, '');
-  const waLink = `https://wa.me/${phoneClean.replace(/^\+/, '')}`;
-  const tgLink = `tel:${phoneClean}`;
+  // data.phone is already E.164 ("+995599123456") after the zod transform.
+  const waLink = `https://wa.me/${data.phone.slice(1)}`;
+  const tgLink = `tel:${data.phone}`;
   const utmStr = data.utm && Object.keys(data.utm).length ? JSON.stringify(data.utm) : '—';
 
   // Plain-text version for email + console

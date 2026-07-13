@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { normalizePhone } from '@/lib/phone';
 
 interface Labels {
   name: string;
   email: string;
   phone: string;
+  phoneHint: string;
   consent: string;
   submit: string;
   submitting: string;
@@ -15,6 +17,7 @@ interface Labels {
     emailRequired: string;
     emailInvalid: string;
     phoneRequired: string;
+    phoneInvalid: string;
     consentRequired: string;
   };
   altLabel: string;
@@ -75,7 +78,13 @@ export default function NdaRequestForm({ labels, locale, whatsappUrl, telegramUr
       const res = await fetch('/api/nda-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...values, utm, locale, eventId }),
+        body: JSON.stringify({
+          ...values,
+          phone: normalizePhone(values.phone) ?? values.phone,
+          utm,
+          locale,
+          eventId,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.ok) {
@@ -167,13 +176,23 @@ export default function NdaRequestForm({ labels, locale, whatsappUrl, telegramUr
           <input
             id="phone"
             type="tel"
+            inputMode="tel"
             autoComplete="tel"
-            placeholder="+995 ..."
+            placeholder="+995 5XX XXX XXX"
             className={inp}
             aria-invalid={!!errors.phone}
-            {...register('phone', { required: true, minLength: 5 })}
+            {...register('phone', {
+              required: true,
+              validate: (v) => normalizePhone(v) !== null,
+            })}
           />
-          {errors.phone && <span className={err}>{labels.errors.phoneRequired}</span>}
+          {errors.phone ? (
+            <span className={err}>
+              {errors.phone.type === 'validate' ? labels.errors.phoneInvalid : labels.errors.phoneRequired}
+            </span>
+          ) : (
+            <span className="text-xs text-[#525252] mt-1.5 block">{labels.phoneHint}</span>
+          )}
         </div>
 
         <label className="flex items-start gap-3 text-[13px] md:text-sm text-[#525252] cursor-pointer leading-5">
